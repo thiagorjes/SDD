@@ -1,0 +1,8 @@
+description = "Gera ou organiza a lista de tarefas (tasks)"
+prompt = """
+Siga as instruções de gerenciamento de tarefas abaixo:
+
+@{skills/tasks.md}
+
+Argumentos: {{args}}
+"""

@@ -1,0 +1,95 @@
+/guidelines preciso criar um projeto de jogo em react-native para android e iOS.
+  - time : solo (1)
+  - linguagem: typescript
+  - frameworks: react-nativ
+  - CLAUDE apenas: motor/engine de renderização? → Sem engine — componentes RN nativos
+  - banco de dados: SQlite local
+  - infra de servidores: nenhuma
+  - build/lint: ESLint, Prettier, tsc
+  - arquitetura: Feature-based
+  - CLAUDE apenas: estrutura de pastas está organizada? → Por feature / tela do jogo
+  - DDD: sem DDD formal
+  - Padroes de código: convenção padrao do react native
+  - Nomenclatura: Pascal Case
+  - Comentários: Sem Comentários
+  - Erros: Exceções nativas da linguagem / framework (try/catch padrão)
+  - Tipos de teste: E2E, no claude eu tive que digitar, pois não ofereceu a opção
+  - Ferramentas: Detox
+  - Cobertura: input manual = 90%
+  - Localização: Pasta seprada na raiz (e2e/ para gemini, tests/ para claude)
+  - Mocks: Preferência por testes reais com o mínimo de mocks possível
+  - Segurança: Nenhuma preocupação especial além do padrão
+  - Logging: Texto simples (`console.log`, `print`)
+  - CLAUDE apenas: Git workflow será adotado? → não utilizarei git por enquanto 
+  - Qual será o nome da pasta do projeto: KingPong, o gemini perguntou. (CLAUDE apenas: puxou o nome de algum lugar.. devo ter escrito em algum arquivos e não me lembro.)
+  - GEMINI apenas: criou pasta nova e eu tive que copiar tudo para a pasta correta - investigar
+ 
+/prd feature-1: criar o jogo em si, header com o nome centralizado, texto em verde (crt), fundo preto ligeiramente mais claro que a area de jogo. "footer" será o paddle de controle analógico por touch arrastando para direita e esquerda para controlar a barra (verde). a bolinha começa vindo de cima e existe uma area central (goal) que se a bola acertar o usuário marca ponto. o restante da tela ocorre colisão ao contato da bola (nas bordas) e se invadir a parte inferior o usuário perde 1 ponto. o jogo termina se o usuário perder 3 pontos (vidas).. o jogo continua indefinidamente até o usuário morrer. os pontos acumulados não tem limite, as vidas sim (3 apenas). 
+   
+  - Autor → thiago cavalcante 
+  - Tipo → Novo produto / MVP 
+  - Urgência → Demanda / Oportunidade
+  - Usuários → Consumidores finais (B2C)
+  - Maturidade → Leigos  
+  - A11y/i18n → Nenhum requisito especial 
+  - Objetivo → aprender react-native e sdd    
+  - KPIs → Performance, Satisfação do usuário
+  - Prazo → Sprint
+  - Referência → Sem referência visual
+  - Erros → Padrão do projeto      
+  - Performance → Tempo de resposta / Latência, Dispositivos low-end
+  - Segurança → Nenhum além do padrão 
+  - SLA → Best effort 
+  - Restrições → Nenhuma restrição significativa
+  - Integrações → Nenhuma integração externa
+  - OUT of scope → integrações com outros SDKs e apis externas. 
+  - Riscos → Nenhum risco significativo
+  - Validação Final → Tenho informações adicionais a incluir
+  - Adições → a area de gol deve ser 3x o tamanho da bola (width).
+  
+/clarify
+  - Posicionamento do Goal → Topo (Fixo)  
+  - Movimentação do Paddle → em qualquer lugar da tela o arraste horizontal move o paddle. 
+  - Reinício Pós-Game Over → Botão "Reiniciar" explícito
+  - Aceleração da Bolinha → Aceleração baseada no paddle
+
+/checklist
+  - Profundidade da Física → Avançada (Vetores/Efeitos)
+  - Estética Visual (CRT) → Efeitos detalhados (Scanlines/Flicker)   
+  - Rigor de Performance → Latência de Toque   
+
+/clarify  o jogo inicia em pause, com um botao (modal) de iniciar, ao ser clicado a bola começa com a velocidade inicia (parametro no código editavel) e angulo aleatório, exceto na direção do gol. a velocidade inicial pode ser 25px/s. o background do game area é rgb(0,0,0), o background do header e footer é rgb(25,25,25) (10% mais claro), o verde da bola, texto e paddle é o verde-radioativo. em sobreposicao bola/gol a bola fica visivel, em bola/paddle deve haver colisão então não pode ocorrer sobreposiçaõ. o efeito de CRT deve ser de linhas espassadas de 2px, com 1ps de largura, e cor verde-radioativo e transparencia de 80%. 
+a scanline é uma barra de 10px de altura com largura total do game area, gradiente do meio para as bordas (vertical) em verde-radioativo.     
+
+/checklist
+  - Checklist Existente → Adicionar ao existente
+
+/clarify verde-radioativo: #83e509, na largada a bola só não pode ser lançada para cima, deve iniciar em 20% da altura da area de jogo a partir do topo da tela.  a bola nao pode se mover totalmente na horizontal, sempre um angulo minimo de 15 graus com a horizontal. o paddle é 30% da largura da tela.
+
+/checklist
+  - Checklist Existente → Adicionar ao existente
+
+/clarify o header tem altura fixa de 50px, o footer (controls) tem altura fixa 200px, o game area completa o restante da area (altura restante da tela) e a largura é sempre total da tela. a bola tem raio fixo de     
+  10px ( 20px de diametro - width - que será usado para calcular o tamanho do gol e do paddle). os botões de iniciar/reiniciar seguem o padrão de modal: fundo escurecido preenchendo toda a tela, popup flutuante com a  
+  mesma cor do header/footer, texto em verde-radioativo, totão do transparente com borda verde-radioativo e texto no verde-radioadivo. CHK008: segue o formato citado. CHK010: o goal é padrao em todo do jogo. CHK011: o 
+  goal é um "buraco" onde a bola pode atravessar a tela 'marcando um gol', e deve ser o triplo da largura da bola (width).CHK012: será medido por usuários. CHK013: 2GB RAM e processadores armeabi-v7a. CHK014: nos      
+  limites da tela sempre ocorre colisao e reflexão do movimento (inverte o sentido do movimento no eixo), exceto no gol que permite passar. CHK015: se ocorrer colisão simultanea, inverte o sentido em ambos os eixos.   
+  CHK020: a velocidade inicial sempre será 20px/s, não sendo necessário tratamento para angulos no MVP.  
+
+  
+/checklist
+  - Checklist Existente → Adicionar ao existente
+
+/techspec
+  - Autor → thiago cavalcante 
+
+/analyze
+
+/tasks
+
+/analyze
+  - aplicar todos os críticos
+
+/analyze
+
+/implement task-1.1

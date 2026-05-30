@@ -1,0 +1,8 @@
+description = "Gera a especificação técnica (TechSpec)"
+prompt = """
+Siga as instruções para criação de TechSpec abaixo:
+
+@{skills/techspec.md}
+
+Argumentos: {{args}}
+"""

@@ -1,0 +1,43 @@
+{
+  "Project": "gemini",
+  "Sessions": [
+    {
+      "Date": "2026-05-29 14:29",
+      "File": "session-2026-05-29T16-39-e9bb5a83.jsonl",
+      "Models": "gemini-3-flash-preview",
+      "Input": 373462,
+      "Output": 1448,
+      "Cached": 5
+    },
+    {
+      "Date": "2026-05-29 14:34",
+      "File": "session-2026-05-29T17-29-af539ece.jsonl",
+      "Models": "gemini-3-flash-preview",
+      "Input": 175670,
+      "Output": 1054,
+      "Cached": 2
+    },
+    {
+      "Date": "2026-05-30 17:04",
+      "File": "session-2026-05-29T17-34-5b07e163.jsonl",
+      "Models": "gemini-3.1-pro-preview, gemini-3-flash-preview, ",
+      "Input": 1895828,
+      "Output": 14135,
+      "Cached": 32
+    },
+    {
+      "Date": "2026-05-30 17:22",
+      "File": "session-2026-05-30T20-04-0b894670.jsonl",
+      "Models": "gemini-3-flash-preview, gemini-3.1-pro-preview",
+      "Input": 2065447,
+      "Output": 5961,
+      "Cached": 32
+    }
+  ],
+  "Totals": {
+    "OutputTokens": 22598,
+    "InputTokens": 4510407,
+    "CachedTokens": 71
+  },
+  "GeneratedAt": "2026-05-30 17:37:59"
+}

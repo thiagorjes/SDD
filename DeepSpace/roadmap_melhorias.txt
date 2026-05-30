@@ -1,0 +1,2 @@
+TechSpec absorve guidelines (mudança de design) — o /techspec passa a citar explicitamente os trechos de guidelines relevantes para a feature. O /tasks então remove a leitura de guidelines completamente e referencia apenas seções do
+  TechSpec. Cada task ficaria com: TechSpec: Seção 3.2 — decisão técnica + padrão de guideline aplicável. É o mais eficiente mas exige ajuste no /techspec também.

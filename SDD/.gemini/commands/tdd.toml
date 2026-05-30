@@ -1,0 +1,8 @@
+description = "Guia o desenvolvimento orientado a testes (TDD)"
+prompt = """
+Siga o fluxo de TDD conforme as instruções abaixo:
+
+@{skills/tdd.md}
+
+Argumentos: {{args}}
+"""

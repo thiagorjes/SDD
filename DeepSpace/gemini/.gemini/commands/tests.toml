@@ -1,0 +1,8 @@
+description = "Guia a criação e execução de testes"
+prompt = """
+Siga as instruções de testes abaixo:
+
+@{skills/tests.md}
+
+Argumentos: {{args}}
+"""

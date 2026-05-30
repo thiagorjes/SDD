@@ -1,0 +1,8 @@
+description = "Análise cruzada de consistência entre PRD, TechSpec e Tasks (somente leitura)"
+prompt = """
+Você deve seguir rigorosamente as instruções do skill de análise cruzada abaixo:
+
+@{skills/analyze.md}
+
+Argumentos: {{args}}
+"""

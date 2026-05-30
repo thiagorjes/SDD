@@ -1,0 +1,8 @@
+description = "Realiza o code review seguindo os padrões do projeto"
+prompt = """
+Você deve realizar o code review seguindo as instruções abaixo:
+
+@{skills/code_review.md}
+
+Argumentos: {{args}}
+"""

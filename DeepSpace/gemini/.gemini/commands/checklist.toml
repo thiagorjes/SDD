@@ -1,0 +1,10 @@
+description = "Gera checklists de qualidade de requisitos (testes unitários para o PRD)"
+prompt = """
+> **Gemini**: para cada `Pergunta interativa` descrita no skill, apresente a pergunta e as opções em texto estruturado, numeradas a partir de 1. Para `multiSelect: false`, aguarde o usuário digitar o número da opção. Para campos marcados como `→ Texto livre`, solicite que o usuário escreva a resposta livremente. **Sempre aguarde a resposta antes de avançar para a próxima pergunta.**
+
+Você deve seguir rigorosamente as instruções do skill de checklist abaixo:
+
+@{skills/checklist.md}
+
+Argumentos: {{args}}
+"""
