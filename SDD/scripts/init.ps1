@@ -3,9 +3,11 @@
 .SYNOPSIS
     Inicializa um novo projeto SDD, criando a estrutura de pastas e configurando o toolset.
 .DESCRIPTION
-    Novo projeto  : cria uma subpasta dentro do clone do SDD e copia o toolset para ela.
-    Projeto existente: copia o toolset para o diretorio pai do projeto (o LLM deve ser
-                       aberto nesse diretorio pai para ter acesso ao projeto e ao SDD).
+    Novo projeto  : cria a pasta do projeto dentro do repositorio clonado e configura a
+                    estrutura (docs, design, guidelines, memory) no proprio repositorio.
+                    Nenhum arquivo do toolset e copiado.
+    Projeto existente: copia o toolset para o diretorio pai do projeto e cria a estrutura
+                       la. O LLM deve ser aberto nesse diretorio pai.
 .EXAMPLE
     .\init.ps1
 #>
@@ -41,17 +43,13 @@ function New-Dir([string]$Path) {
     }
 }
 
-function Add-GitKeep([string]$Dir) {
-    $k = Join-Path $Dir ".gitkeep"
-    if (-not (Test-Path $k)) { New-Item -ItemType File -Path $k -Force | Out-Null }
-}
 
 function Write-File([string]$Path, [string[]]$Lines) {
     [System.IO.File]::WriteAllText($Path, ($Lines -join "`n"), $utf8NoBom)
 }
 
-function Write-Ok([string]$Label)   { Write-Host "  [ok] $Label" -ForegroundColor Green }
-function Write-Warn([string]$Msg)   { Write-Host "  [!]  $Msg"   -ForegroundColor Yellow }
+function Write-Ok([string]$Label)  { Write-Host "  [ok] $Label" -ForegroundColor Green }
+function Write-Warn([string]$Msg)  { Write-Host "  [!]  $Msg"   -ForegroundColor Yellow }
 
 # ── Toolset root ──────────────────────────────────────────────────────────────
 
@@ -66,12 +64,13 @@ Write-Host ""
 $projName   = (Read-Host "Nome do projeto").Trim()
 $isExisting = Ask-YesNo "Projeto ja em andamento (source existente)?" "N"
 
-$projPath = $null
+$projPath  = $null
+$targetDir = $null
 if ($isExisting) {
     $projPath  = Ask-ExistingPath "  Pasta do projeto existente"
     $targetDir = Split-Path $projPath -Parent
 } else {
-    $targetDir = Join-Path $toolRoot $projName
+    $targetDir = $toolRoot
 }
 
 $withDesign = Ask-YesNo "Incluir etapa de design no fluxo?" "S"
@@ -111,30 +110,45 @@ if (-not (Ask-YesNo "Confirma?" "S")) {
 Write-Host ""
 Write-Host "Criando estrutura..." -ForegroundColor Cyan
 
+# Determina se o toolset precisa ser copiado:
+# - novo projeto: targetDir = toolRoot, nada a copiar
+# - existente dentro do clone: parent resolve para toolRoot, nada a copiar
+# - existente fora do clone: targetDir diferente de toolRoot, copia necessaria
+$toolRootFull  = (Resolve-Path $toolRoot).Path
 New-Dir $targetDir
+$targetDirFull = (Resolve-Path $targetDir).Path
+$copyToolset   = $isExisting -and ($targetDirFull -ne $toolRootFull)
 
-# Toolset base: skills, scripts
-foreach ($f in @("skills", "scripts")) {
-    $src = Join-Path $toolRoot $f
-    if (Test-Path $src) {
-        Copy-Item -Recurse -Force $src $targetDir
-        Write-Ok "$f/"
+# ── Copiar toolset (apenas quando destino e externo ao repositorio) ────────────
+
+if ($copyToolset) {
+    foreach ($f in @("skills", "scripts")) {
+        $src = Join-Path $toolRoot $f
+        if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok "$f/" }
     }
+
+    if ($useClaude) {
+        $src = Join-Path $toolRoot ".claude"
+        if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok ".claude/commands/" }
+    }
+    if ($useGemini) {
+        $src = Join-Path $toolRoot ".gemini"
+        if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok ".gemini/commands/" }
+    }
+
+    $comp = Join-Path $toolRoot "comportamento.md"
+    if (Test-Path $comp) { Copy-Item -Force $comp $targetDir; Write-Ok "comportamento.md" }
+} elseif ($isExisting) {
+    Write-Warn "Projeto dentro do repositorio SDD — copia do toolset ignorada"
 }
 
-# Commands por LLM
-if ($useClaude) {
-    $src = Join-Path $toolRoot ".claude"
-    if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok ".claude/commands/" }
-}
-if ($useGemini) {
-    $src = Join-Path $toolRoot ".gemini"
-    if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok ".gemini/commands/" }
-}
+# ── Novo projeto: criar pasta do projeto dentro do repositorio ────────────────
 
-# comportamento.md
-$comp = Join-Path $toolRoot "comportamento.md"
-if (Test-Path $comp) { Copy-Item -Force $comp $targetDir; Write-Ok "comportamento.md" }
+if (-not $isExisting) {
+    $projDir = Join-Path $targetDir $projName
+    New-Dir $projDir
+    Write-Ok "$projName/ (pasta do projeto)"
+}
 
 # ── CLAUDE.md ─────────────────────────────────────────────────────────────────
 
@@ -155,7 +169,7 @@ if ($useClaude) {
 
 # ── GEMINI.md ─────────────────────────────────────────────────────────────────
 
-if ($useGemini) {
+if ($useGemini -and $copyToolset) {
     $src = Join-Path $toolRoot "GEMINI.md"
     if (Test-Path $src) { Copy-Item -Force $src $targetDir; Write-Ok "GEMINI.md" }
 }
@@ -164,7 +178,7 @@ if ($useGemini) {
 
 foreach ($f in @("docs/prd", "docs/techspec", "docs/tasks", "docs/checklists")) {
     $d = Join-Path $targetDir $f
-    New-Dir $d; Add-GitKeep $d; Write-Ok "$f/"
+    New-Dir $d; Write-Ok "$f/"
 }
 
 # ── Pastas de design ──────────────────────────────────────────────────────────
@@ -172,7 +186,7 @@ foreach ($f in @("docs/prd", "docs/techspec", "docs/tasks", "docs/checklists")) 
 if ($withDesign) {
     foreach ($f in @("design/flows", "design/tokens", "design/prototypes")) {
         $d = Join-Path $targetDir $f
-        New-Dir $d; Add-GitKeep $d; Write-Ok "$f/"
+        New-Dir $d; Write-Ok "$f/"
     }
 }
 
@@ -193,60 +207,64 @@ if ($glSrc) {
         Write-Ok "guidelines/ (importado de $glSrc)"
     }
 } else {
-    Add-GitKeep $glDir
     Write-Ok "guidelines/ (vazia)"
 }
 
 # Template de design system (se design ativo e sem import)
 if ($withDesign -and -not $glSrc) {
-    Write-File (Join-Path $glDir "GUIDELINE_DESIGN_SYSTEM.md") @(
-        "# Guideline: Design System",
-        "",
-        "> Padrao tecnico para a etapa de design no fluxo SDD.",
-        "> Preencha conforme as decisoes tomadas durante o /designer.",
-        "",
-        "## Stack de Prototipagem",
-        "",
-        "| Camada | Tecnologia | Entrega |",
-        "|---|---|---|",
-        "| Markup | HTML5 semantico | via CDN |",
-        "| Estilos | Tailwind CSS | via CDN |",
-        "| Icones | Phosphor Icons | via CDN |",
-        "| Interacoes | Alpine.js ou Vanilla JS | via CDN / inline |",
-        "| Imagens | placehold.co | placeholder em desenvolvimento |",
-        "",
-        "## Acessibilidade",
-        "",
-        "- Contraste minimo WCAG AA (4.5:1 para texto normal, 3:1 para texto grande)",
-        "- Atributos ``aria-*`` obrigatorios em componentes interativos",
-        "- Navegacao por teclado funcional",
-        "",
-        "## design-tokens.json — Campos Obrigatorios",
-        "",
-        "```json",
-        "{",
-        '  "colors": { "primary": "", "secondary": "", "background": "", "surface": "", "text": "", "error": "" },',
-        '  "typography": { "fontFamily": "", "scale": { "xs": "", "sm": "", "base": "", "lg": "", "xl": "", "2xl": "" } },',
-        '  "spacing": { "unit": "4px", "scale": [0, 4, 8, 12, 16, 24, 32, 48, 64] },',
-        '  "breakpoints": { "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px" },',
-        '  "borderRadius": { "sm": "", "md": "", "lg": "", "full": "9999px" }',
-        "}",
-        "```",
-        "",
-        "## Convencoes de Prototipo",
-        "",
-        "- Respeitar o dispositivo-alvo (Mobile First ou Desktop) definido no PRD",
-        "- Um arquivo HTML por tela mapeada no fluxo (Etapa 1)",
-        "- Nomenclatura: ``[numero]-[nome-da-tela].html`` (ex: ``01-login.html``)",
-        "- Tokens importados via tag ``<script>`` no inicio de cada prototipo",
-        "",
-        "## Heuristicas de Referencia",
-        "",
-        "- Nielsen 10 Heuristics",
-        "- Mobile First (Luke Wroblewski)",
-        "- Gestalt (proximidade, similaridade, continuidade)"
-    )
-    Write-Ok "guidelines/GUIDELINE_DESIGN_SYSTEM.md (template)"
+    $glDesignPath = Join-Path $glDir "GUIDELINE_DESIGN_SYSTEM.md"
+    if (-not (Test-Path $glDesignPath)) {
+        Write-File $glDesignPath @(
+            "# Guideline: Design System",
+            "",
+            "> Padrao tecnico para a etapa de design no fluxo SDD.",
+            "> Preencha conforme as decisoes tomadas durante o /designer.",
+            "",
+            "## Stack de Prototipagem",
+            "",
+            "| Camada | Tecnologia | Entrega |",
+            "|---|---|---|",
+            "| Markup | HTML5 semantico | via CDN |",
+            "| Estilos | Tailwind CSS | via CDN |",
+            "| Icones | Phosphor Icons | via CDN |",
+            "| Interacoes | Vanilla JS | via CDN / inline |",
+            "| Imagens | placehold.co | placeholder em desenvolvimento |",
+            "",
+            "## Acessibilidade",
+            "",
+            "- Contraste minimo WCAG AA (4.5:1 para texto normal, 3:1 para texto grande)",
+            "- Atributos ``aria-*`` obrigatorios em componentes interativos",
+            "- Navegacao por teclado funcional",
+            "",
+            "## design-tokens.json — Campos Obrigatorios",
+            "",
+            "```json",
+            "{",
+            '  "colors": { "primary": "", "secondary": "", "background": "", "surface": "", "text": "", "error": "" },',
+            '  "typography": { "fontFamily": "", "scale": { "xs": "", "sm": "", "base": "", "lg": "", "xl": "", "2xl": "" } },',
+            '  "spacing": { "unit": "4px", "scale": [0, 4, 8, 12, 16, 24, 32, 48, 64] },',
+            '  "breakpoints": { "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px" },',
+            '  "borderRadius": { "sm": "", "md": "", "lg": "", "full": "9999px" }',
+            "}",
+            "```",
+            "",
+            "## Convencoes de Prototipo",
+            "",
+            "- Respeitar o dispositivo-alvo (Mobile First ou Desktop) definido no PRD",
+            "- Um arquivo HTML por tela mapeada no fluxo (Etapa 1)",
+            "- Nomenclatura: ``[numero]-[nome-da-tela].html`` (ex: ``01-login.html``)",
+            "- Tokens importados via tag ``<script>`` no inicio de cada prototipo",
+            "",
+            "## Heuristicas de Referencia",
+            "",
+            "- Nielsen 10 Heuristics",
+            "- Mobile First (Luke Wroblewski)",
+            "- Gestalt (proximidade, similaridade, continuidade)"
+        )
+        Write-Ok "guidelines/GUIDELINE_DESIGN_SYSTEM.md (template)"
+    } else {
+        Write-Ok "guidelines/GUIDELINE_DESIGN_SYSTEM.md (ja existe, mantido)"
+    }
 }
 
 # ── Memory ────────────────────────────────────────────────────────────────────
@@ -262,77 +280,92 @@ if ($withDesign) { $pipeline += " → [/designer]" }
 $pipeline += " → /techspec → /tasks → [/analyze] → /implement (por task)"
 
 # state.md
-$stateLines = @(
-    "# Estado Operacional — $projName",
-    "_Atualizado em: ${today}_",
-    "",
-    "> Estado atual do toolset e dos projetos em andamento.",
-    "> Para principios estaveis e ADRs, veja [memory/constitution.md](constitution.md).",
-    "",
-    "---",
-    "",
-    "## Toolset Atual",
-    "",
-    "| Componente | Qtd | Localizacao |",
-    "|---|---|---|",
-    "| Skills agnosticos | $skillCount | ``skills/`` |"
-)
-if ($useClaude) { $stateLines += "| Commands Claude | $skillCount | ``.claude/commands/`` |" }
-if ($useGemini) { $stateLines += "| Commands Gemini | $skillCount | ``.gemini/commands/`` |" }
-$stateLines += @(
-    "",
-    "**Pipeline:** $pipeline",
-    "",
-    "---",
-    "",
-    "## Features Ativas",
-    "",
-    "| Feature | PRD | TechSpec | Tasks | Status |",
-    "|---|---|---|---|---|",
-    "| _(nenhuma ativa)_ | — | — | — | — |",
-    "",
-    "---",
-    "",
-    "## Evolucao do SDD",
-    "",
-    "| Data | Mudanca |",
-    "|---|---|",
-    "| $today | Projeto inicializado via init.ps1 |"
-)
-Write-File (Join-Path $memDir "state.md") $stateLines
-Write-Ok "memory/state.md"
+$statePath = Join-Path $memDir "state.md"
+if (-not (Test-Path $statePath)) {
+    $stateLines = @(
+        "# Estado Operacional — $projName",
+        "_Atualizado em: ${today}_",
+        "",
+        "> Estado atual do toolset e dos projetos em andamento.",
+        "> Para principios estaveis e ADRs, veja [memory/constitution.md](constitution.md).",
+        "",
+        "---",
+        "",
+        "## Toolset Atual",
+        "",
+        "| Componente | Qtd | Localizacao |",
+        "|---|---|---|",
+        "| Skills agnosticos | $skillCount | ``skills/`` |"
+    )
+    if ($useClaude) { $stateLines += "| Commands Claude | $skillCount | ``.claude/commands/`` |" }
+    if ($useGemini) { $stateLines += "| Commands Gemini | $skillCount | ``.gemini/commands/`` |" }
+    $stateLines += @(
+        "",
+        "**Pipeline:** $pipeline",
+        "",
+        "---",
+        "",
+        "## Features Ativas",
+        "",
+        "| Feature | PRD | TechSpec | Tasks | Status |",
+        "|---|---|---|---|---|",
+        "| _(nenhuma ativa)_ | — | — | — | — |",
+        "",
+        "---",
+        "",
+        "## Evolucao do SDD",
+        "",
+        "| Data | Mudanca |",
+        "|---|---|",
+        "| $today | Projeto inicializado via init.ps1 |"
+    )
+    Write-File $statePath $stateLines
+    Write-Ok "memory/state.md"
+} else {
+    Write-Warn "memory/state.md ja existe, mantido"
+}
 
 # constitution.md
-Write-File (Join-Path $memDir "constitution.md") @(
-    "# Constituicao — $projName",
-    "_Criado em: ${today}_",
-    "",
-    "> Principios estaveis, ADRs e decisoes de design do toolset.",
-    "> Atualizado apenas quando os fundamentos do projeto mudarem.",
-    "",
-    "---",
-    "",
-    "## Decisoes de Arquitetura (ADRs)",
-    "",
-    "_(a registrar conforme o projeto evoluir)_",
-    "",
-    "---",
-    "",
-    "## Principios Estaveis",
-    "",
-    "_(a registrar conforme o projeto evoluir)_"
-)
-Write-Ok "memory/constitution.md"
+$constPath = Join-Path $memDir "constitution.md"
+if (-not (Test-Path $constPath)) {
+    Write-File $constPath @(
+        "# Constituicao — $projName",
+        "_Criado em: ${today}_",
+        "",
+        "> Principios estaveis, ADRs e decisoes de design do toolset.",
+        "> Atualizado apenas quando os fundamentos do projeto mudarem.",
+        "",
+        "---",
+        "",
+        "## Decisoes de Arquitetura (ADRs)",
+        "",
+        "_(a registrar conforme o projeto evoluir)_",
+        "",
+        "---",
+        "",
+        "## Principios Estaveis",
+        "",
+        "_(a registrar conforme o projeto evoluir)_"
+    )
+    Write-Ok "memory/constitution.md"
+} else {
+    Write-Warn "memory/constitution.md ja existe, mantido"
+}
 
 # costs.md
-Write-File (Join-Path $memDir "costs.md") @(
-    "# Custos de Tokens — $projName",
-    "_Atualizado automaticamente por scripts/claude_costs.ps1 ou scripts/gemini_costs.ps1_",
-    "",
-    "| Data | LLM | Input tokens | Output tokens | Custo estimado |",
-    "|---|---|---|---|---|"
-)
-Write-Ok "memory/costs.md"
+$costsPath = Join-Path $memDir "costs.md"
+if (-not (Test-Path $costsPath)) {
+    Write-File $costsPath @(
+        "# Custos de Tokens — $projName",
+        "_Atualizado automaticamente por scripts/claude_costs.ps1 ou scripts/gemini_costs.ps1_",
+        "",
+        "| Data | LLM | Input tokens | Output tokens | Custo estimado |",
+        "|---|---|---|---|---|"
+    )
+    Write-Ok "memory/costs.md"
+} else {
+    Write-Warn "memory/costs.md ja existe, mantido"
+}
 
 # ── README.md ─────────────────────────────────────────────────────────────────
 
@@ -357,7 +390,9 @@ if ($withDesign) {
     $readmeLines += "- **``design/tokens/``** — Design system tokens (JSON)"
     $readmeLines += "- **``design/prototypes/``** — Prototipos de alta fidelidade (HTML)"
 }
-if ($projPath) {
+if (-not $isExisting) {
+    $readmeLines += "- **``$projName/``** — Source do projeto"
+} else {
     $readmeLines += "- **``$(Split-Path $projPath -Leaf)/``** — Source do projeto"
 }
 $readmeLines += @(
@@ -395,7 +430,7 @@ Write-Host ""
 Write-Host "  $targetDir"
 Write-Host ""
 Write-Host "Proximo passo:" -ForegroundColor Yellow
-$firstStep = if ($hasGl) { "/prd  (guidelines importadas, pode pular /guidelines)" } else { "/guidelines" }
 Write-Host "  Abra o LLM na pasta: $targetDir"
+$firstStep = if ($hasGl) { "/prd  (guidelines importadas, pode pular /guidelines)" } else { "/guidelines" }
 Write-Host "  Execute: $firstStep"
 Write-Host ""
