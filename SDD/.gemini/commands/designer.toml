@@ -1,0 +1,10 @@
+description = "Conduz o processo de design UX/UI, gerando fluxos, design system e prototiposs HTML"
+prompt = """
+> **Gemini**: para cada `Pergunta interativa` descrita no skill, apresente a pergunta e as opcoes em texto estruturado, numeradas a partir de 1. Para `multiSelect: false`, aguarde o usuario digitar o numero da opcao. Para `multiSelect: true`, informe que pode digitar multiplos numeros separados por virgula. Para campos marcados como `-> Texto livre`, solicite que o usuario escreva a resposta livremente. **Sempre aguarde a resposta antes de avancar para a proxima pergunta.**
+
+Utilize as instrucoes de design abaixo:
+
+@{skills/designer.md}
+
+Argumentos: {{args}}
+"""

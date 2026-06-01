@@ -7,4 +7,4 @@ Antes de qualquer ação nesta sessão, leia os seguintes arquivos na ordem:
 3. `memory/state.md` — estado operacional atual (features, tasks, qualidade)
 4. `README.md` — estrutura e pipeline do projeto
 
-> **Economia de tokens**: ao final de cada interação com o usuário, execute `scripts/Get-GeminiCosts.ps1`.
+> **Economia de tokens**: ao final de cada interação com o usuário, execute `scripts/gemini_costs.ps1`.

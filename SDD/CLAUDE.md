@@ -6,4 +6,4 @@ IGNORE o arquivo GEMINI.md.
 @memory/state.md
 @README.md
 
-> **Economia de tokens**: ao final de cada interação com o usuário, execute `scripts/Get-ClaudeCosts.ps1`.
+> **Economia de tokens**: ao final de cada interação com o usuário, execute `scripts/claude_costs.ps1`.
