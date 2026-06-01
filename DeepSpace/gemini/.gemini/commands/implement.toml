@@ -1,8 +1,0 @@
-description = "Guia a implementação de novas funcionalidades"
-prompt = """
-Siga as instruções de implementação abaixo:
-
-@{skills/implement.md}
-
-Argumentos: {{args}}
-"""
