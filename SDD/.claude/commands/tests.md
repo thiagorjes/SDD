@@ -1,3 +1,3 @@
 Argumentos: $ARGUMENTS
 
-@skills/tests.md
+@.agents/skills/tests.md

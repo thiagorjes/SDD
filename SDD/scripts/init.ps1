@@ -43,7 +43,6 @@ function New-Dir([string]$Path) {
     }
 }
 
-
 function Write-File([string]$Path, [string[]]$Lines) {
     [System.IO.File]::WriteAllText($Path, ($Lines -join "`n"), $utf8NoBom)
 }
@@ -80,14 +79,17 @@ $glSrc = $null
 if ($hasGl) { $glSrc = Ask-ExistingPath "  Pasta com os guidelines existentes" }
 
 Write-Host ""
-Write-Host "LLM(s): 1=Claude  2=Gemini  3=Ambos"
+Write-Host "LLM(s): 1=Claude  2=Antigravity (agy)  3=Ambos"
 do { $llm = (Read-Host "Escolha [1/2/3]").Trim() } while ($llm -notin @("1","2","3"))
 $useClaude = $llm -in @("1","3")
-$useGemini = $llm -in @("2","3")
+$useAgy    = $llm -in @("2","3")
 
 # ── Confirmacao ───────────────────────────────────────────────────────────────
 
-$llmLabel = if ($useClaude -and $useGemini) { "Claude + Gemini" } elseif ($useClaude) { "Claude" } else { "Gemini" }
+$llmLabel = @()
+if ($useClaude) { $llmLabel += "Claude" }
+if ($useAgy)    { $llmLabel += "Antigravity" }
+$llmLabel = $llmLabel -join " + "
 
 Write-Host ""
 Write-Host ("─── Resumo " + ("─" * 34)) -ForegroundColor Yellow
@@ -122,7 +124,7 @@ $copyToolset   = $isExisting -and ($targetDirFull -ne $toolRootFull)
 # ── Copiar toolset (apenas quando destino e externo ao repositorio) ────────────
 
 if ($copyToolset) {
-    foreach ($f in @("skills", "scripts")) {
+    foreach ($f in @(".agents", "scripts")) {
         $src = Join-Path $toolRoot $f
         if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok "$f/" }
     }
@@ -130,10 +132,6 @@ if ($copyToolset) {
     if ($useClaude) {
         $src = Join-Path $toolRoot ".claude"
         if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok ".claude/commands/" }
-    }
-    if ($useGemini) {
-        $src = Join-Path $toolRoot ".gemini"
-        if (Test-Path $src) { Copy-Item -Recurse -Force $src $targetDir; Write-Ok ".gemini/commands/" }
     }
 
     $comp = Join-Path $toolRoot "comportamento.md"
@@ -153,25 +151,51 @@ if (-not $isExisting) {
 # ── CLAUDE.md ─────────────────────────────────────────────────────────────────
 
 if ($useClaude) {
-    $ignoreGemini = if ($useGemini) { "`nIGNORE o arquivo GEMINI.md." } else { "" }
-    Write-File (Join-Path $targetDir "CLAUDE.md") @(
-        "# CLAUDE.md$ignoreGemini",
-        "",
-        "@comportamento.md",
-        "@memory/constitution.md",
-        "@memory/state.md",
-        "@README.md",
-        "",
-        "> **Economia de tokens**: ao final de cada interacao com o usuario, execute ``scripts/claude_costs.ps1``."
-    )
-    Write-Ok "CLAUDE.md"
+    $tgt = Join-Path $targetDir "CLAUDE.md"
+    if (-not (Test-Path $tgt)) {
+        Write-File $tgt @(
+            "# CLAUDE.md",
+            "",
+            "@comportamento.md",
+            "@memory/constitution.md",
+            "@memory/state.md",
+            "@README.md",
+            "",
+            "> **Economia de tokens**: ao final de cada interacao com o usuario, execute ``scripts/claude_costs.ps1``."
+        )
+        Write-Ok "CLAUDE.md (criado)"
+    } else {
+        Write-Ok "CLAUDE.md (ja existe)"
+    }
 }
 
-# ── GEMINI.md ─────────────────────────────────────────────────────────────────
+# ── AGENTS.md (Antigravity) ───────────────────────────────────────────────────
 
-if ($useGemini -and $copyToolset) {
-    $src = Join-Path $toolRoot "GEMINI.md"
-    if (Test-Path $src) { Copy-Item -Force $src $targetDir; Write-Ok "GEMINI.md" }
+if ($useAgy) {
+    $tgt = Join-Path $targetDir "AGENTS.md"
+    if (-not (Test-Path $tgt)) {
+        $src = Join-Path $toolRoot "AGENTS.md"
+        if ($copyToolset -and (Test-Path $src)) {
+            Copy-Item -Force $src $targetDir
+            Write-Ok "AGENTS.md (copiado)"
+        } else {
+            Write-File $tgt @(
+                "# AGENTS.md",
+                "IGNORE o arquivo CLAUDE.md.",
+                "",
+                "Antes de qualquer acao nesta sessao, leia os seguintes arquivos na ordem:",
+                "1. ``comportamento.md`` — idioma, comportamento e regras de interacao",
+                "2. ``memory/constitution.md`` — principios e decisoes de arquitetura do toolset",
+                "3. ``memory/state.md`` — estado operacional atual (features, tasks, qualidade)",
+                "4. ``README.md`` — estrutura e pipeline do projeto",
+                "",
+                "> **Economia de tokens**: ao final de cada interacao com o usuario, execute ``scripts/claude_costs.ps1``."
+            )
+            Write-Ok "AGENTS.md (criado)"
+        }
+    } else {
+        Write-Ok "AGENTS.md (ja existe)"
+    }
 }
 
 # ── Pastas de artefatos (docs/) ───────────────────────────────────────────────
@@ -210,63 +234,6 @@ if ($glSrc) {
     Write-Ok "guidelines/ (vazia)"
 }
 
-# Template de design system (se design ativo e sem import)
-if ($withDesign -and -not $glSrc) {
-    $glDesignPath = Join-Path $glDir "GUIDELINE_DESIGN_SYSTEM.md"
-    if (-not (Test-Path $glDesignPath)) {
-        Write-File $glDesignPath @(
-            "# Guideline: Design System",
-            "",
-            "> Padrao tecnico para a etapa de design no fluxo SDD.",
-            "> Preencha conforme as decisoes tomadas durante o /designer.",
-            "",
-            "## Stack de Prototipagem",
-            "",
-            "| Camada | Tecnologia | Entrega |",
-            "|---|---|---|",
-            "| Markup | HTML5 semantico | via CDN |",
-            "| Estilos | Tailwind CSS | via CDN |",
-            "| Icones | Phosphor Icons | via CDN |",
-            "| Interacoes | Vanilla JS | via CDN / inline |",
-            "| Imagens | placehold.co | placeholder em desenvolvimento |",
-            "",
-            "## Acessibilidade",
-            "",
-            "- Contraste minimo WCAG AA (4.5:1 para texto normal, 3:1 para texto grande)",
-            "- Atributos ``aria-*`` obrigatorios em componentes interativos",
-            "- Navegacao por teclado funcional",
-            "",
-            "## design-tokens.json — Campos Obrigatorios",
-            "",
-            "```json",
-            "{",
-            '  "colors": { "primary": "", "secondary": "", "background": "", "surface": "", "text": "", "error": "" },',
-            '  "typography": { "fontFamily": "", "scale": { "xs": "", "sm": "", "base": "", "lg": "", "xl": "", "2xl": "" } },',
-            '  "spacing": { "unit": "4px", "scale": [0, 4, 8, 12, 16, 24, 32, 48, 64] },',
-            '  "breakpoints": { "sm": "640px", "md": "768px", "lg": "1024px", "xl": "1280px" },',
-            '  "borderRadius": { "sm": "", "md": "", "lg": "", "full": "9999px" }',
-            "}",
-            "```",
-            "",
-            "## Convencoes de Prototipo",
-            "",
-            "- Respeitar o dispositivo-alvo (Mobile First ou Desktop) definido no PRD",
-            "- Um arquivo HTML por tela mapeada no fluxo (Etapa 1)",
-            "- Nomenclatura: ``[numero]-[nome-da-tela].html`` (ex: ``01-login.html``)",
-            "- Tokens importados via tag ``<script>`` no inicio de cada prototipo",
-            "",
-            "## Heuristicas de Referencia",
-            "",
-            "- Nielsen 10 Heuristics",
-            "- Mobile First (Luke Wroblewski)",
-            "- Gestalt (proximidade, similaridade, continuidade)"
-        )
-        Write-Ok "guidelines/GUIDELINE_DESIGN_SYSTEM.md (template)"
-    } else {
-        Write-Ok "guidelines/GUIDELINE_DESIGN_SYSTEM.md (ja existe, mantido)"
-    }
-}
-
 # ── Memory ────────────────────────────────────────────────────────────────────
 
 $memDir = Join-Path $targetDir "memory"
@@ -295,10 +262,10 @@ if (-not (Test-Path $statePath)) {
         "",
         "| Componente | Qtd | Localizacao |",
         "|---|---|---|",
-        "| Skills agnosticos | $skillCount | ``skills/`` |"
+        "| Skills agnosticos | $skillCount | ``.agents/skills/`` |"
     )
     if ($useClaude) { $stateLines += "| Commands Claude | $skillCount | ``.claude/commands/`` |" }
-    if ($useGemini) { $stateLines += "| Commands Gemini | $skillCount | ``.gemini/commands/`` |" }
+    if ($useAgy)    { $stateLines += "| Skills Antigravity | $skillCount | ``.agents/skills/`` |" }
     $stateLines += @(
         "",
         "**Pipeline:** $pipeline",
@@ -357,7 +324,7 @@ $costsPath = Join-Path $memDir "costs.md"
 if (-not (Test-Path $costsPath)) {
     Write-File $costsPath @(
         "# Custos de Tokens — $projName",
-        "_Atualizado automaticamente por scripts/claude_costs.ps1 ou scripts/gemini_costs.ps1_",
+        "_Atualizado automaticamente por scripts/claude_costs.ps1_",
         "",
         "| Data | LLM | Input tokens | Output tokens | Custo estimado |",
         "|---|---|---|---|---|"
@@ -374,10 +341,10 @@ $readmeLines = @(
     "",
     "## Estrutura",
     "",
-    "- **``skills/``** — Skills do pipeline SDD (agnosticos ao LLM)"
+    "- **``.agents/skills/``** — Skills do pipeline SDD (agnosticos ao LLM, descobertos nativamente pelo Antigravity)"
 )
 if ($useClaude) { $readmeLines += "- **``.claude/commands/``** — Commands Claude" }
-if ($useGemini) { $readmeLines += "- **``.gemini/commands/``** — Commands Gemini" }
+if ($useAgy)    { $readmeLines += "- **``.agents/agents/``** — Subagentes do Comite de Analise (architect, security, database)" }
 $readmeLines += @(
     "- **``guidelines/``** — Padroes tecnicos deste projeto",
     "- **``docs/prd/``** — Product Requirements Documents",

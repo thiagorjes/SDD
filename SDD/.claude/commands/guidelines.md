@@ -2,4 +2,4 @@
 
 Argumentos: $ARGUMENTS
 
-@skills/guidelines.md
+@.agents/skills/guidelines.md

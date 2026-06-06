@@ -103,9 +103,10 @@ Resolva os gaps antes de gerar o documento.
 
 ---
 
-## FASE 3 — Geração do TechSpec
+## FASE 3 — Geração e Salvamento Inicial do TechSpec
 
 > Prossiga para esta fase somente após todas as incertezas bloqueantes da FASE 0 e os gaps da FASE 2 estarem resolvidos.
+> **Importante:** Grave o TechSpec gerado diretamente no disco (`docs/techspec/[nome-kebab-case]-techspec.md`) sem exibi-lo completo no chat, poupando tokens.
 
 Gere o documento completo usando exatamente este template:
 
@@ -489,9 +490,9 @@ Responses de erro:
 
 ---
 
-## FASE 4 — Artefatos de Design Granulares
+## FASE 4 — Geração e Salvamento dos Artefatos Granulares
 
-> Com base no conteúdo do TechSpec gerado na FASE 3, gere os artefatos de design em arquivos separados, focados e independentemente revisáveis. Cada arquivo deve ser legível **sem precisar abrir o TechSpec**.
+> Com base no conteúdo do TechSpec gerado na FASE 3, gere e **salve no disco imediatamente** os artefatos de design em arquivos separados. Cada arquivo deve ser legível **sem precisar abrir o TechSpec**.
 
 Estrutura de destino:
 ```
@@ -750,16 +751,29 @@ Após gerar os artefatos, adicione referências no TechSpec:
 
 ---
 
-## FASE 5 — Salvamento e Próximos Passos
+## FASE 5 — Comitê de Análise Assíncrono
 
-1. Confirme que todos os arquivos foram salvos:
-   - `docs/techspec/[nome-kebab-case]-techspec.md`
-   - `docs/techspec/[nome-kebab-case]-research.md` (se gerado na FASE 0)
-   - `docs/techspec/[nome-kebab-case]/data-model.md`
-   - `docs/techspec/[nome-kebab-case]/quickstart.md`
-   - `docs/techspec/[nome-kebab-case]/contracts/[recurso].md` (um por recurso)
+Assim como no `/guidelines`, o TechSpec e os artefatos granulares devem passar por escrutínio técnico antes de congelarmos a versão.
 
-2. Informe ao usuário:
+1. **Apresente ao Usuário e Peça Permissão:**
+   > "A Especificação Técnica (TechSpec) e os artefatos foram gerados e salvos no disco. Deseja que eu submeta este planejamento ao **Comitê de Especialistas** (Arquitetura, Segurança e Dados) no background para revisão crítica? [Sim / Não]"
+
+2. **Se o usuário disser "Sim":**
+   - Utilize `invoke_subagent` (ou equivalentes no orquestrador) para invocar os agentes, instruindo-os a **ler os arquivos recém-salvos**. Eles devem avaliar gargalos de performance, falhas de modelagem e segurança.
+   - Apresente o feedback consolidado ao usuário.
+   > "O comitê analisou os arquivos:
+   > - **Arquitetura/Dados:** [Ponto levantado]
+   > - **Segurança:** [Ponto levantado]
+   > Aceita que eu atualize os arquivos salvos para corrigir esses pontos?"
+   - Se o usuário aceitar, atualize diretamente os arquivos em disco.
+
+3. **Se o usuário disser "Não":** Avance direto para a Fase 6.
+
+---
+
+## FASE 6 — Resumo e Próximos Passos
+
+1. Informe ao usuário:
    - Artefatos gerados (lista com caminhos)
    - Entidades modeladas e endpoints especificados
    - ADRs tomados e seus trade-offs

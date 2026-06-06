@@ -2,4 +2,4 @@
 
 Argumentos: $ARGUMENTS
 
-@skills/clarify.md
+@.agents/skills/clarify.md
