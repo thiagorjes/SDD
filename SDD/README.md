@@ -1,29 +1,36 @@
-# Processo de Desenvolvimento SDD
+# Processo de Desenvolvimento SDD — KingPong
 
-## Estrutura do Repositório
+## Estrutura
 
-- **`skills/`** — Skills do pipeline SDD (agnósticos ao LLM)
-- **`.claude/commands/`** / **`.gemini/commands/`** — Commands de cada LLM que ativam os skills
-- **`guidelines/`** — Padrões técnicos deste projeto
-- **`memory/constitution.md`** — Princípios estáveis, ADRs e decisões de design do toolset. Leia antes de qualquer ação.
-- **`memory/state.md`** — Estado operacional atual: features ativas, tasks, qualidade. Atualizado a cada interação.
-- **`scripts/`** — Scripts utilitários (cálculo de tokens, etc.)
+- **`.agents/skills/`** — Skills do pipeline SDD (agnosticos ao LLM, descobertos nativamente pelo Antigravity)
+- **`.claude/commands/`** — Commands Claude
+- **`.agents/agents/`** — Subagentes do Comite de Analise (architect, security, database)
+- **`guidelines/`** — Padroes tecnicos deste projeto
+- **`docs/prd/`** — Product Requirements Documents
+- **`docs/techspec/`** — Especificacoes tecnicas
+- **`docs/tasks/`** — Plano de tasks
+- **`docs/checklists/`** — Checklists de qualidade
+- **`design/flows/`** — Diagramas de jornada e navegacao (Mermaid)
+- **`design/tokens/`** — Design system tokens (JSON)
+- **`design/prototypes/`** — Prototipos de alta fidelidade (HTML)
+- **`KingPong/`** — Source do projeto
+- **`memory/constitution.md`** — Principios estaveis e ADRs. Leia antes de qualquer acao.
+- **`memory/state.md`** — Estado operacional atual. Atualizado a cada interacao.
+- **`scripts/`** — Scripts utilitarios
 
 ---
 
 ## Pipeline SDD
 
 ```
-/guidelines → /prd → [/clarify] → [/checklist] → /techspec → /tasks → [/analyze] → /implement (por task)
-                         ↑               ↑           ↑ (Fase 0)           ↑              ├── RED:    /tests
-                      ambiguidades   qualidade    incertezas          consistência       ├── GREEN:  /implement
-                      do PRD         do PRD       técnicas            PRD×TS×Tasks       ├── REFACTOR
-                                                                                         └── REVIEW: /code_review
+/guidelines → /prd → [/clarify] → [/checklist] → [/designer] → /techspec → /tasks → [/analyze] → /implement (por task)
 ```
 
-**Skills entre colchetes `[/skill]`** são opcionais mas recomendados — aumentam a qualidade dos artefatos subsequentes.
+**Skills entre colchetes `[/skill]`** sao opcionais mas recomendados.
 
 ---
 
-# Descrição do Projeto
+## Projeto
 
+**Nome:** KingPong
+**Iniciado em:** 2026-06-06

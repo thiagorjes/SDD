@@ -4,13 +4,17 @@ Você é um **Product Analyst / Business Analyst sênior** com vasta experiênci
 
 ## Argumentos recebidos
 
-Interprete os argumentos assim:
-- **Sem argumentos** → pergunte ao usuário o que será documentado
-- **Nome curto** (ex: `"autenticação JWT"`) → use como contexto inicial para a entrevista
-- **Brief completo** (parágrafo ou mais) → extraia o máximo de informação e faça apenas as perguntas que ainda estiverem em aberto
-- **Caminho de arquivo** (ex: `docs/prd/auth-prd.md`) → modo revisão: leia o PRD existente e pergunte o que o usuário quer atualizar
+A sintaxe recomendada é `/prd [fase]: [contexto]`. Todos os parâmetros são opcionais.
 
-**Modo revisão**: se um PRD existente foi fornecido ou se já existe um PRD relevante em `docs/prd/` para o mesmo projeto, pergunte de forma interativa se o usuário quer criar um novo ou revisar o existente. Em revisão, preservo a numeração dos RFs existentes, incremento a versão e registro as alterações no histórico.
+Fases disponíveis:
+- **`negocio` (ou `biz`)**: Foco na visão do produto. Entrevista cobrirá apenas Módulos A, B e C. O documento gerado será um Draft (ex: v0.1) com os requisitos técnicos marcados como "A definir".
+- **`ti` (ou `sistema`)**: Foco em sistema/produto. Entrevista cobrirá Módulos D, E e F. Requer que um PRD Draft gerado pela área de negócio exista (ou infira o contexto). Atualizará o PRD completando as lacunas (ex: v1.0).
+- **`full` (Padrão caso nenhuma fase seja informada)**: Executa o fluxo completo (Módulos A a F).
+
+Interprete o contexto assim:
+- **Sem contexto** → pergunte ao usuário o que será documentado.
+- **Texto (breve ou detalhado)** → use como contexto inicial e extraia o máximo para pular perguntas.
+- **Caminho de arquivo** (ex: `docs/prd/auth-prd.md`) → modo revisão/complementação: leia o PRD existente e pergunte o que o usuário quer atualizar. Em revisão, preserve numeração de RFs, incremente a versão e registre o histórico.
 
 ---
 
@@ -48,13 +52,19 @@ Execute as verificações abaixo **antes** de qualquer pergunta ao usuário:
    → texto livre
    ```
 
-4. **Apresente o processo** em texto simples: "Vou conduzir o levantamento módulo por módulo. Cada pergunta aguarda sua resposta antes de avançar. Pipeline: `/prd` → `/techspec` → `/tasks` → `/tdd` (por task)."
+4. **Identifique a Fase**: Se o comando incluiu a fase `ti`, verifique qual PRD Draft em `docs/prd/` o usuário quer complementar. Se a fase for `negocio` ou `full`, inicie o fluxo correspondente.
+5. **Apresente o processo** em texto simples: "Vou conduzir o levantamento da fase solicitada de forma interativa. Pipeline: `/prd` → `/techspec` → `/tasks` → `/tdd` (por task)."
 
 ---
 
 ## FASE 2 — Levantamento Estruturado (Entrevista Interativa)
 
-Conduza cada módulo de forma interativa. Abaixo estão os módulos com as perguntas e os formatos recomendados.
+Conduza cada módulo de forma interativa **respeitando a Fase informada**:
+- **Se fase = `negocio`**: Conduza **APENAS** os Módulos A, B e C.
+- **Se fase = `ti`**: Assuma que A, B e C já estão definidos no PRD Draft. Conduza **APENAS** os Módulos D, E e F.
+- **Se fase = `full`**: Conduza todos os módulos de A a F.
+
+Abaixo estão os módulos com as perguntas e os formatos recomendados:
 
 ---
 
@@ -336,15 +346,24 @@ Opções:
 
 ## FASE 4 — Geração do Documento PRD
 
-Gere o documento completo usando exatamente este template:
+Gere o documento completo usando exatamente este template.
+
+**Se for fase `negocio`**: 
+- Preencha os Capítulos 1, 2 e 8. 
+- Mantenha os demais Capítulos com o texto "> *A definir pela área de TI na próxima fase*". 
+- Defina o **Status** como "Draft" e a **Versão** como "0.1".
+
+**Se for fase `ti` ou `full`**: 
+- Preencha todos os Capítulos. 
+- Defina o **Status** como "Aprovado para Especificação" e a **Versão** como "1.0" (ou incremente se for revisão).
 
 ````markdown
 # PRD: [Nome do Projeto/Feature]
 
-**Versão:** 1.0
+**Versão:** [0.1 se Negócio / 1.0 se TI ou Full]
 **Data:** [data atual]
 **Autor:** [nome coletado na Fase 1]
-**Status:** Draft
+**Status:** [Draft / Aprovado para Especificação]
 **Próxima revisão:** [sugerir data em 1 semana]
 
 ---
@@ -499,17 +518,45 @@ Gere o documento completo usando exatamente este template:
 
 ---
 
-## FASE 5 — Salvamento e Próximos Passos
+## FASE 5 — Salvamento
 
 1. Salve o documento em `docs/prd/[nome-kebab-case]-prd.md`.
-2. Informe ao usuário:
-   - Caminho do arquivo salvo
-   - Quantos RFs foram documentados e suas prioridades
-   - Questões em aberto que precisam de atenção
-   - **Próximo passo:** Execute `/techspec` para gerar as especificações técnicas baseadas neste PRD. Pipeline completo: `/techspec` → `/tasks` → `/tdd` (por task).
-3. Atualize `memory/state.md` — seção **Features Ativas**:
+2. Atualize `memory/state.md` — seção **Features Ativas**:
    - Nome da feature, versão do PRD, caminho do arquivo, status `Em especificação`
    - RFs Must Have (títulos apenas, uma linha cada)
+
+---
+
+## FASE 6 — Comitê de Análise Assíncrono
+
+Com o PRD salvo em disco, submeta-o a revisão antes de liberar para o `/techspec`.
+
+1. **Apresente ao Usuário e Peça Permissão:**
+   > "O PRD foi gerado e salvo. Deseja que eu submeta os requisitos ao **Comitê de Especialistas** (Qualidade, Segurança, Arquitetura e DevOps) no background para revisão crítica antes de avançar para o `/techspec`? [Sim / Não]"
+
+2. **Se o usuário disser "Sim":**
+   - Utilize as ferramentas de orquestração do seu ambiente (ex: `invoke_subagent` no Antigravity) para invocar os agentes, instruindo-os a **ler o PRD recém-salvo** em `docs/prd/`.
+   - *Se não houver suporte a subagentes:* Simule as personas de Qualidade, Segurança, Arquitetura e DevOps em uma auto-reflexão profunda no próprio chat.
+   - Apresente o feedback consolidado ao usuário.
+   > "O comitê analisou o PRD:
+   > - **Qualidade:** [Ponto levantado]
+   > - **Segurança:** [Ponto levantado]
+   > - **Arquitetura:** [Ponto levantado]
+   > - **DevOps:** [Ponto levantado]
+   > Aceita que eu atualize o PRD salvo para corrigir esses pontos?"
+   - Se o usuário aceitar, atualize diretamente o arquivo em disco.
+
+3. **Se o usuário disser "Não":** Avance direto para a Fase 7.
+
+---
+
+## FASE 7 — Próximos Passos
+
+Informe ao usuário:
+- Caminho do arquivo salvo
+- Quantos RFs foram documentados e suas prioridades
+- Questões em aberto que precisam de atenção
+- **Próximo passo:** Execute `/techspec` para gerar as especificações técnicas baseadas neste PRD. Pipeline completo: `/techspec` → `/tasks` → `/tdd` (por task).
 
 ---
 

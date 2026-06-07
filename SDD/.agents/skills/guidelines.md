@@ -540,6 +540,67 @@ Opções:
 
 ---
 
+### Módulo J — Design e UI/UX
+> Pule se o projeto for puramente backend/API ou se for uma CLI sem interface gráfica.
+
+**J1** — Identidade Visual e Tokens
+```
+Pergunta interativa | header: "Identidade Visual" | multiSelect: false
+Pergunta: "Qual é o status da identidade visual e design tokens?"
+Opções:
+- Já existem artefatos definidos (ex: DESIGN.md, Figma, tokens CSS mapeados)
+- Usaremos um Design System público/existente sem alterações estruturais
+- Precisará ser criado do zero na etapa de Design (/designer)
+- Não definido
+- Outro (descreva)
+```
+
+**J2** — Biblioteca de Componentes UI
+```
+Pergunta interativa | header: "Componentes UI" | multiSelect: false
+Pergunta: "Qual será a estratégia base para os componentes de interface?"
+Opções:
+- Componentes 100% customizados (do zero com Tailwind, CSS puro, etc)
+- Biblioteca unstyled/headless (ex: Radix UI, Headless UI) + Customização
+- Biblioteca opinionada completa (ex: Material UI, Ant Design, Chakra UI)
+- Outro (descreva)
+```
+
+**J3** — Ícones e Assets Visuais
+```
+Pergunta interativa | header: "Ícones e Assets" | multiSelect: false
+Pergunta: "Qual será o padrão para a iconografia do projeto?"
+Opções:
+- Phosphor Icons / Lucide Icons (modernos, neutros)
+- Material Icons / FontAwesome (clássicos)
+- SVGs customizados desenhados pelo time
+- Outro (descreva)
+```
+
+**J4** — Estratégia de Responsividade
+```
+Pergunta interativa | header: "Responsividade" | multiSelect: false
+Pergunta: "Qual será a abordagem principal de layout?"
+Opções:
+- Mobile First rígido (pensado para celular primariamente)
+- Desktop First (sistemas internos, dashboards complexos)
+- Web Responsive clássico (fluido em todas as telas)
+- Outro (descreva)
+```
+
+**J5** — Animações e Micro-interações
+```
+Pergunta interativa | header: "Animações" | multiSelect: false
+Pergunta: "Qual a diretriz técnica para animações na interface?"
+Opções:
+- Animações ricas e complexas (ex: Framer Motion, Lottie)
+- Apenas transições CSS simples (foco em leveza)
+- Nenhuma animação (foco absoluto em performance e acessibilidade)
+- Outro (descreva)
+```
+
+---
+
 ## FASE 3 — Geração dos Arquivos
 
 **Regra geral**: gere apenas os arquivos com informação suficiente. Onde houver lacunas, inclua `<!-- TODO: preencher -->` com instrução clara do que adicionar.
@@ -573,6 +634,7 @@ Este diretório define os padrões que regem o desenvolvimento. **Todos os skill
 | `security.md` | Práticas de segurança, dados sensíveis, compliance |
 | `observability.md` | Logging, métricas, tracing |
 | `git-workflow.md` | Branches, commits, PRs, CI/CD |
+| `design.md` | Diretrizes visuais, estado dos tokens e biblioteca de componentes |
 
 ## Manutenção
 
@@ -854,7 +916,49 @@ Se ausente: gerar UUID v4 na borda e propagar em todos os logs e respostas.
 
 ### `guidelines/git-workflow.md`
 
-Gere com base no Módulo I. Inclua: diagrama de fluxo de branches (Mermaid preferido), convenção de nomenclatura de branch (ex: `feat/TICKET-123-descricao`), formato de commit (Conventional Commits com exemplos), processo de PR, checklist de merge.
+Gere com base no Módulo I. Esqueleto:
+
+```markdown
+# Fluxo de Trabalho Git e CI/CD
+
+## Branching Model
+- **Estratégia:** [ex: GitHub Flow]
+- **Nomenclatura:** [ex: feature/, fix/]
+
+## Commits e Pull Requests
+- **Padrão de Commit:** [ex: Conventional Commits]
+- **Regras para CR:** [ex: Mínimo de 1 aprovador + CI passando]
+
+## Pipeline (CI/CD)
+- **Checks Obrigatórios:**
+  - [ex: Lint e Formatação]
+  - [ex: Testes Unitários]
+```
+
+### `guidelines/design.md`
+
+Gere com base nas respostas do Módulo J. Use este esqueleto:
+
+```markdown
+# Diretrizes de Design e UI/UX
+
+## Identidade Visual e Tokens
+- **Status Atual:** [Descreva o status mapeado, ex: Já existem artefatos em `design/tokens.json`]
+- **Referências/Documentação:** [Link ou localização dos artefatos de design/briefing, se aplicável]
+
+## Estratégia de Componentes e Assets
+- **Abordagem de UI:** [Ex: Biblioteca Unstyled + Tailwind]
+- **Bibliotecas Base:** [Ex: Radix UI, Headless UI]
+- **Ícones:** [Ex: Phosphor Icons via CDN]
+
+## Comportamento e Layout
+- **Responsividade:** [Ex: Mobile First rígido]
+- **Animações e Micro-interações:** [Ex: Apenas transições CSS simples]
+
+## Regras de Consistência
+- Não sobrescrever ou recriar tokens manualmente (cores, fontes, espaçamentos) que já estejam definidos no arquivo de design principal ou no briefing gerado pelo `/designer`.
+- Seguir estritamente o ecossistema de componentes escolhido.
+```
 
 ---
 
@@ -875,7 +979,29 @@ Se após a entrevista algum arquivo obrigatório não puder ser gerado com infor
 
 ---
 
-## FASE 4 — Salvamento e Próximos Passos
+## FASE 4 — Comitê de Análise Assíncrono
+
+Antes de salvar definitivamente os arquivos, submeta-os a uma revisão para garantir robustez.
+
+1. **Apresente o Draft ao Usuário e Peça Permissão:**
+   > "Os guidelines foram estruturados. Antes de finalizar, recomendo submetermos esse planejamento ao **Comitê de Especialistas** (Segurança, Arquitetura e DevOps) no background para garantir que não há falhas críticas. Deseja que eu inicie a revisão? [Sim / Não]"
+
+2. **Se o usuário disser "Sim":**
+   - Utilize as ferramentas de orquestração do seu ambiente (ex: `invoke_subagent` no Antigravity) para invocar subagentes especializados, orientando-os a analisar os documentos gerados contra melhores práticas de mercado.
+   - *Se não houver suporte a subagentes:* Simule as personas de Arquitetura, Segurança e DevOps em uma auto-reflexão profunda no próprio chat.
+   
+3. **Consolidação:** Apresente os resultados da análise ao usuário e ajuste os arquivos se ele aprovar.
+   > "O comitê analisou o planejamento. 
+   > - **Segurança:** [Ponto levantado].
+   > - **Arquitetura:** [Ponto levantado].
+   > - **DevOps:** [Ponto levantado].
+   > Aceita incorporar essas sugestões nos documentos finais?"
+
+4. **Se o usuário disser "Não":** Avance direto para a Fase 5.
+
+---
+
+## FASE 5 — Salvamento e Próximos Passos
 
 1. Crie a pasta `guidelines/` se não existir.
 2. Salve cada arquivo gerado.

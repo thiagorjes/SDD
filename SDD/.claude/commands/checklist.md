@@ -2,4 +2,4 @@
 
 Argumentos: $ARGUMENTS
 
-@skills/checklist.md
+@.agents/skills/checklist.md

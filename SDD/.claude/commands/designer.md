@@ -2,4 +2,4 @@
 
 Argumentos: $ARGUMENTS
 
-@.agents/skills/prd.md
+@.agents/skills/designer.md
