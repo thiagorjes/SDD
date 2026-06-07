@@ -32,13 +32,13 @@ O projeto conta com ferramentas embutidas para auxiliar os agentes virtuais e o 
 
 ├── 📂 SDD/
 
-│   ├── 📂 .agents/  # Definições de papéis (Architect, Database, Designer, QA, etc.) e skills.
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 .agents/  # Definições de papéis (Architect, Database, Designer, QA, etc.) e skills.
 
-│   ├── 📂 .claude/  # Comandos e agentes específicos otimizados para o Claude[cite: 32].
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 .claude/  # Comandos e agentes específicos otimizados para o Claude[cite: 32].
 
-│   ├── 📂 memory/   # Gestão de estado, custos e constituição das LLMs[cite: 33].
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 memory/   # Gestão de estado, custos e constituição das LLMs[cite: 33].
 
-│   └── 📂 scripts/  # Scripts de automação (ex: init.ps1, cálculo de custos)[cite: 34].
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 📂 scripts/  # Scripts de automação (ex: init.ps1, cálculo de custos)[cite: 34].
    
 ├── 📄 README.md             # Este documento[cite: 35].
    
