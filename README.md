@@ -29,13 +29,21 @@ O SDD ataca esse problema segregando as responsabilidades. Em vez de uma única 
 O projeto conta com ferramentas embutidas para auxiliar os agentes virtuais e o ciclo de vida do framework:
 
 📂 raiz-do-projeto
+
 ├── 📂 SDD/
-│   ├── 📂 .agents/        # Definições de papéis (Architect, Database, Designer, QA, etc.) e skills.
-│   ├── 📂 .claude/        # Comandos e agentes específicos otimizados para o Claude.
-│   ├── 📂 memory/         # Gestão de estado, custos e constituição das LLMs.
-│   └── 📂 scripts/        # Scripts de automação (ex: init.ps1, cálculo de custos).
-├── 📄 README.md           # Este documento
-└── 📄 roadmap_melhorias.txt # Acompanhamento do desenvolvimento e evolução do framework
+
+│   ├── 📂 .agents/  # Definições de papéis (Architect, Database, Designer, QA, etc.) e skills.
+
+│   ├── 📂 .claude/  # Comandos e agentes específicos otimizados para o Claude[cite: 32].
+
+│   ├── 📂 memory/   # Gestão de estado, custos e constituição das LLMs[cite: 33].
+
+│   └── 📂 scripts/  # Scripts de automação (ex: init.ps1, cálculo de custos)[cite: 34].
+   
+├── 📄 README.md             # Este documento[cite: 35].
+   
+└── 📄 roadmap_melhorias.txt # Acompanhamento do desenvolvimento e evolução do framework[cite: 35].
+
 
 ## 🚀 Como Começar
 Para inicializar a estrutura do SDD em um novo projeto e preparar o ambiente para as IAs, utilize o script de inicialização localizado na pasta de utilitários:
