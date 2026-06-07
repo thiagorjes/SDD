@@ -2,6 +2,7 @@
 Sempre se comunicar em português do Brasil.
 
 # travas de segurança
+- Durante a criação de documentos, sempre salves as parciais e atualize à medida que for necessário, para evitarmos perda de contexto por falta de tokens.
 - Durante as atividades, mantenha o controle dos arquivos lidos para evitar releitura.
 - **Exceto sob a orientação explícita do usuário**, nunca altere ou exclua um documento/arquivo sem antes conferir o conteúdo para garantir que está realizando a ação no arquivo correto. Essa orientação pode ser ignorada se o arquivo já tiver sido "marcado" como lido. 
 
