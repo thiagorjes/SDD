@@ -28,21 +28,14 @@ O SDD ataca esse problema segregando as responsabilidades. Em vez de uma única 
 
 O projeto conta com ferramentas embutidas para auxiliar os agentes virtuais e o ciclo de vida do framework:
 
-📂 raiz-do-projeto
-
-├── 📂 SDD/
-
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 .agents/  # Definições de papéis (Architect, Database, Designer, QA, etc.) e skills.
-
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 .claude/  # Comandos e agentes específicos otimizados para o Claude[cite: 32].
-
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 memory/   # Gestão de estado, custos e constituição das LLMs[cite: 33].
-
-│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 📂 scripts/  # Scripts de automação (ex: init.ps1, cálculo de custos)[cite: 34].
-   
-├── 📄 README.md             # Este documento[cite: 35].
-   
-└── 📄 roadmap_melhorias.txt # Acompanhamento do desenvolvimento e evolução do framework[cite: 35].
+📂 raiz-do-projeto  
+├── 📂 SDD/  
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 .agents/  # Definições de papéis (Architect, Database, Designer, QA, etc.) e skills.  
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 .claude/  # Comandos e agentes específicos otimizados para o Claude[cite: 32].  
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📂 memory/   # Gestão de estado, custos e constituição das LLMs[cite: 33].  
+│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 📂 scripts/  # Scripts de automação (ex: init.ps1, cálculo de custos)[cite: 34].     
+├── 📄 README.md             # Este documento[cite: 35].     
+└── 📄 roadmap_melhorias.txt # Acompanhamento do desenvolvimento e evolução do framework[cite: 35].  
 
 
 ## 🚀 Como Começar
