@@ -66,7 +66,7 @@ $isExisting = Ask-YesNo "Projeto ja em andamento (source existente)?" "N"
 $projPath  = $null
 $targetDir = $null
 if ($isExisting) {
-    $projPath  = Ask-ExistingPath "  Pasta do projeto existente"
+    $projPath  = (Resolve-Path (Ask-ExistingPath "  Pasta do projeto existente")).Path
     $targetDir = Split-Path $projPath -Parent
 } else {
     $targetDir = $toolRoot
@@ -183,13 +183,24 @@ if ($useAgy) {
                 "# AGENTS.md",
                 "IGNORE o arquivo CLAUDE.md.",
                 "",
-                "Antes de qualquer acao nesta sessao, leia os seguintes arquivos na ordem:",
-                "1. ``comportamento.md`` — idioma, comportamento e regras de interacao",
-                "2. ``memory/constitution.md`` — principios e decisoes de arquitetura do toolset",
-                "3. ``memory/state.md`` — estado operacional atual (features, tasks, qualidade)",
-                "4. ``README.md`` — estrutura e pipeline do projeto",
+                "@comportamento.md",
+                "@memory/constitution.md",
+                "@memory/state.md",
+                "@README.md",
                 "",
-                "> **Economia de tokens**: ao final de cada interacao com o usuario, execute ``scripts/claude_costs.ps1``."
+                "",
+                "**/analyze:** @.agents/skills/analyze.md",
+                "**/checklists:** @.agents/skills/checklists.md",
+                "**/clarify:** @.agents/skills/clarify.md",
+                "**/code_review:** @.agents/skills/code_review.md",
+                "**/designer:** @.agents/skills/designer.md",
+                "**/guidelines:** @.agents/skills/guidelines.md",
+                "**/implement:** @.agents/skills/implement.md",
+                "**/prd:** @.agents/skills/prd.md",
+                "**/tasks:** @.agents/skills/tasks.md",
+                "**/tdd:** @.agents/skills/tdd.md",
+                "**/techspec:** @.agents/skills/techspec.md",               
+                "**/tests:** @.agents/skills/tests.md"
             )
             Write-Ok "AGENTS.md (criado)"
         }
