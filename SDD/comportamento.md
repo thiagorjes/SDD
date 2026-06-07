@@ -24,4 +24,4 @@ Sempre se comunicar em português do Brasil.
   - `memory/constitution.md` — princípios estáveis, ADRs e decisões de design do toolset. Atualizado apenas quando os fundamentos do projeto mudarem.
   - `memory/state.md` — estado operacional (features ativas, tasks, qualidade, evolução). Atualizado a cada interação que altera o estado do projeto.
 - **regra de ouro**: se a mudança é um princípio ou decisão de arquitetura → `constitution.md`. Se é progresso, status ou resultado → `state.md`.
-- ao final de cada interação com o usuário, execute o script de custos especificado na configuração do LLM em uso.
+- ao final de cada interação com o usuário, execute o script de custos especificado na configuração do LLM em uso  (não precisa solicitar permissão do usuário para isso, pois é mandatório executar ao final de cada interação).
