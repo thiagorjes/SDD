@@ -988,12 +988,13 @@ Antes de salvar definitivamente os arquivos, submeta-os a uma revisão para gara
 
 2. **Se o usuário disser "Sim":**
    - Utilize as ferramentas de orquestração do seu ambiente (ex: `invoke_subagent` no Antigravity) para invocar subagentes especializados, orientando-os a analisar os documentos gerados contra melhores práticas de mercado.
-   - *Se não houver suporte a subagentes:* Simule as personas de Arquitetura e Segurança em uma auto-reflexão profunda no próprio chat.
+   - *Se não houver suporte a subagentes:* Simule as personas de Arquitetura, Segurança e DevOps em uma auto-reflexão profunda no próprio chat.
    
 3. **Consolidação:** Apresente os resultados da análise ao usuário e ajuste os arquivos se ele aprovar.
    > "O comitê analisou o planejamento. 
    > - **Segurança:** [Ponto levantado].
    > - **Arquitetura:** [Ponto levantado].
+   > - **DevOps:** [Ponto levantado].
    > Aceita incorporar essas sugestões nos documentos finais?"
 
 4. **Se o usuário disser "Não":** Avance direto para a Fase 5.

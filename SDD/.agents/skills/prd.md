@@ -518,17 +518,45 @@ Gere o documento completo usando exatamente este template.
 
 ---
 
-## FASE 5 — Salvamento e Próximos Passos
+## FASE 5 — Salvamento
 
 1. Salve o documento em `docs/prd/[nome-kebab-case]-prd.md`.
-2. Informe ao usuário:
-   - Caminho do arquivo salvo
-   - Quantos RFs foram documentados e suas prioridades
-   - Questões em aberto que precisam de atenção
-   - **Próximo passo:** Execute `/techspec` para gerar as especificações técnicas baseadas neste PRD. Pipeline completo: `/techspec` → `/tasks` → `/tdd` (por task).
-3. Atualize `memory/state.md` — seção **Features Ativas**:
+2. Atualize `memory/state.md` — seção **Features Ativas**:
    - Nome da feature, versão do PRD, caminho do arquivo, status `Em especificação`
    - RFs Must Have (títulos apenas, uma linha cada)
+
+---
+
+## FASE 6 — Comitê de Análise Assíncrono
+
+Com o PRD salvo em disco, submeta-o a revisão antes de liberar para o `/techspec`.
+
+1. **Apresente ao Usuário e Peça Permissão:**
+   > "O PRD foi gerado e salvo. Deseja que eu submeta os requisitos ao **Comitê de Especialistas** (Qualidade, Segurança, Arquitetura e DevOps) no background para revisão crítica antes de avançar para o `/techspec`? [Sim / Não]"
+
+2. **Se o usuário disser "Sim":**
+   - Utilize as ferramentas de orquestração do seu ambiente (ex: `invoke_subagent` no Antigravity) para invocar os agentes, instruindo-os a **ler o PRD recém-salvo** em `docs/prd/`.
+   - *Se não houver suporte a subagentes:* Simule as personas de Qualidade, Segurança, Arquitetura e DevOps em uma auto-reflexão profunda no próprio chat.
+   - Apresente o feedback consolidado ao usuário.
+   > "O comitê analisou o PRD:
+   > - **Qualidade:** [Ponto levantado]
+   > - **Segurança:** [Ponto levantado]
+   > - **Arquitetura:** [Ponto levantado]
+   > - **DevOps:** [Ponto levantado]
+   > Aceita que eu atualize o PRD salvo para corrigir esses pontos?"
+   - Se o usuário aceitar, atualize diretamente o arquivo em disco.
+
+3. **Se o usuário disser "Não":** Avance direto para a Fase 7.
+
+---
+
+## FASE 7 — Próximos Passos
+
+Informe ao usuário:
+- Caminho do arquivo salvo
+- Quantos RFs foram documentados e suas prioridades
+- Questões em aberto que precisam de atenção
+- **Próximo passo:** Execute `/techspec` para gerar as especificações técnicas baseadas neste PRD. Pipeline completo: `/techspec` → `/tasks` → `/tdd` (por task).
 
 ---
 

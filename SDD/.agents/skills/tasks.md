@@ -341,19 +341,45 @@ Se confirmado:
 
 ---
 
-## FASE 6 — Salvamento e Conclusão
+## FASE 6 — Salvamento
 
 1. Salve o documento principal em `docs/tasks/[nome-kebab-case]-tasks.md`.
 2. Salve cada arquivo individual em `docs/tasks/[nome-kebab-case]/task-X.Y.md`.
-3. Informe ao usuário:
-   - Caminho do documento principal e da subpasta criada
-   - Total de tarefas por epic e estimativa total
-   - Caminho crítico (sequência de tasks mais longa)
-   - Tasks sem dependências (podem iniciar imediatamente)
-   - **As tarefas estão prontas para implementação.** Execute `/tdd TASK-X.Y` para cada task na ordem do backlog priorizado. Para registrar issues encontradas durante implementação ou review, edite a seção `## Histórico de Issues` do arquivo individual correspondente.
-4. Atualize `memory/state.md` — seção **Tasks**:
+3. Atualize `memory/state.md` — seção **Tasks**:
    - Nome da feature, caminho do documento principal
    - Total de tasks por epic e progresso inicial `0/N`
+
+---
+
+## FASE 7 — Comitê de Análise Assíncrono
+
+Com as tasks salvas em disco, submeta-as a revisão antes de liberar para o `/tdd`.
+
+1. **Apresente ao Usuário e Peça Permissão:**
+   > "As tasks foram geradas e salvas. Deseja que eu submeta o planejamento ao **Comitê de Especialistas** (Qualidade e Arquitetura) no background para revisão crítica antes de iniciar a implementação? [Sim / Não]"
+
+2. **Se o usuário disser "Sim":**
+   - Utilize as ferramentas de orquestração do seu ambiente (ex: `invoke_subagent` no Antigravity) para invocar os agentes, instruindo-os a **ler os arquivos recém-salvos** em `docs/tasks/`.
+   - *Se não houver suporte a subagentes:* Simule as personas de Qualidade e Arquitetura em uma auto-reflexão profunda no próprio chat.
+   - Apresente o feedback consolidado ao usuário.
+   > "O comitê analisou as tasks:
+   > - **Qualidade:** [Ponto levantado — ex: critério de aceite vago em TASK-X.Y]
+   > - **Arquitetura:** [Ponto levantado — ex: TASK-X.Y mistura responsabilidades de domínio e infra]
+   > Aceita que eu atualize os arquivos salvos para corrigir esses pontos?"
+   - Se o usuário aceitar, atualize diretamente os arquivos em disco.
+
+3. **Se o usuário disser "Não":** Avance direto para a Fase 8.
+
+---
+
+## FASE 8 — Conclusão
+
+Informe ao usuário:
+- Caminho do documento principal e da subpasta criada
+- Total de tarefas por epic e estimativa total
+- Caminho crítico (sequência de tasks mais longa)
+- Tasks sem dependências (podem iniciar imediatamente)
+- **As tarefas estão prontas para implementação.** Execute `/tdd TASK-X.Y` para cada task na ordem do backlog priorizado. Para registrar issues encontradas durante implementação ou review, edite a seção `## Histórico de Issues` do arquivo individual correspondente.
 
 ---
 

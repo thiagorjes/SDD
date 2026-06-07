@@ -756,14 +756,18 @@ Após gerar os artefatos, adicione referências no TechSpec:
 Assim como no `/guidelines`, o TechSpec e os artefatos granulares devem passar por escrutínio técnico antes de congelarmos a versão.
 
 1. **Apresente ao Usuário e Peça Permissão:**
-   > "A Especificação Técnica (TechSpec) e os artefatos foram gerados e salvos no disco. Deseja que eu submeta este planejamento ao **Comitê de Especialistas** (Arquitetura, Segurança e Dados) no background para revisão crítica? [Sim / Não]"
+   > "A Especificação Técnica (TechSpec) e os artefatos foram gerados e salvos no disco. Deseja que eu submeta este planejamento ao **Comitê de Especialistas** (Arquitetura, Segurança, Dados, DevOps e Qualidade) no background para revisão crítica? [Sim / Não]"
 
 2. **Se o usuário disser "Sim":**
-   - Utilize `invoke_subagent` (ou equivalentes no orquestrador) para invocar os agentes, instruindo-os a **ler os arquivos recém-salvos**. Eles devem avaliar gargalos de performance, falhas de modelagem e segurança.
+   - Utilize `invoke_subagent` (ou equivalentes no orquestrador) para invocar os agentes, instruindo-os a **ler os arquivos recém-salvos**. Eles devem avaliar gargalos de performance, falhas de modelagem, segurança, riscos operacionais e testabilidade dos contratos.
+   - *Se não houver suporte a subagentes:* Simule as personas de Arquitetura, Segurança, Database, DevOps e Qualidade em uma auto-reflexão profunda no próprio chat.
    - Apresente o feedback consolidado ao usuário.
    > "O comitê analisou os arquivos:
-   > - **Arquitetura/Dados:** [Ponto levantado]
+   > - **Arquitetura:** [Ponto levantado]
    > - **Segurança:** [Ponto levantado]
+   > - **Dados:** [Ponto levantado]
+   > - **DevOps:** [Ponto levantado]
+   > - **Qualidade:** [Ponto levantado]
    > Aceita que eu atualize os arquivos salvos para corrigir esses pontos?"
    - Se o usuário aceitar, atualize diretamente os arquivos em disco.
 

@@ -78,5 +78,7 @@ _Registre resultados de `/analyze`, `/tests` e `/code_review`._
 | 2026-06-06 | Módulo J do `/guidelines` expandido com perguntas sobre ícones, responsividade e animações para um `design.md` completo |
 | 2026-06-06 | Implementado o conceito de "Comitê de Análise Assíncrono" como penúltima fase nos skills `/guidelines` e `/techspec` |
 | 2026-06-06 | Alterado fluxo do `/guidelines` e `/techspec` para salvar artefatos no disco **antes** da revisão do Comitê, economizando tokens e contexto |
-| 2026-06-06 | Criados os arquivos agnósticos dos subagentes do Comitê (`architect.md`, `security.md`, `database.md`) em `.claude/agents/` |
+| 2026-06-06 | Criados os arquivos agnósticos dos subagentes do Comitê (`architect.md`, `security.md`, `database.md`, `devops.md`, `qa.md`) em `.agents/agents/` |
+| 2026-06-06 | Skill `/prd` atualizado: adicionadas FASE 6 (Comitê: QA, Segurança, Arquitetura, DevOps) e FASE 7 (Próximos Passos) |
+| 2026-06-06 | Skill `/tasks` atualizado: adicionadas FASE 7 (Comitê: QA, Arquitetura) e FASE 8 (Conclusão) |
 | 2026-06-06 | Migração para Agent Skills Standard: `.agent/skills/` renomeado para `.agents/skills/` (plural), `.toml` removidos, `.gemini/commands/` descontinuado |
