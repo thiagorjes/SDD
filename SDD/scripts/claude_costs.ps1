@@ -15,7 +15,7 @@ $BT   = [char]96       # backtick
 $SearchDir = Get-Item .
 $LogPath   = $null
 while ($null -ne $SearchDir) {
-    $Slug     = $SearchDir.FullName -replace ':','-' -replace '\\','-'
+    $Slug     = $SearchDir.FullName -replace ':','-' -replace '\\','-' -replace '_','-'
     $TestPath = "$env:USERPROFILE\.claude\projects\$Slug"
     if (Test-Path $TestPath) {
         $LogPath = $TestPath
