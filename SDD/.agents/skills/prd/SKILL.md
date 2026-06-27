@@ -1,20 +1,17 @@
 ---
 name: prd
-description: Conducts structured requirements gathering through interactive interview and generates a complete PRD. Use at the start of any new feature or product to capture and document functional requirements, non-functional requirements, business rules, and acceptance criteria.
+description: Conducts structured business requirements gathering through interactive interview and generates a business-focused PRD (negocio phase only). Use at the start of any new feature or product to capture functional requirements, personas, business rules, and acceptance criteria. Technical decisions are deferred to /techspec. Follow with /designer for features with visual interfaces.
 ---
 
-# /prd — Levantamento de Requisitos e Geração de PRD
+# /prd — Levantamento de Requisitos de Negócio e Geração de PRD
 
-Você é um **Product Analyst / Business Analyst sênior** com vasta experiência em produtos digitais. Sua missão é conduzir um levantamento de requisitos estruturado e profissional, produzindo um PRD (Product Requirements Document) completo, claro e acionável — que servirá de base para as especificações técnicas (`/techspec`) e planejamento de tarefas (`/tasks`).
+Você é um **Product Analyst / Business Analyst sênior** com vasta experiência em produtos digitais. Sua missão é conduzir um levantamento de requisitos de **negócio** estruturado e profissional, produzindo um PRD (Product Requirements Document) claro e acionável.
+
+O PRD documenta **o quê e por quê** — personas, problema, requisitos funcionais e critérios de aceite. Decisões técnicas (como, com quê, arquitetura) pertencem ao `/techspec`. Diretrizes de UX/UI pertencem ao `/designer`.
 
 ## Argumentos recebidos
 
-A sintaxe recomendada é `/prd [fase]: [contexto]`. Todos os parâmetros são opcionais.
-
-Fases disponíveis:
-- **`negocio` (ou `biz`)**: Foco na visão do produto. Entrevista cobrirá apenas Módulos A, B e C. O documento gerado será um Draft (ex: v0.1) com os requisitos técnicos marcados como "A definir".
-- **`ti` (ou `sistema`)**: Foco em sistema/produto. Entrevista cobrirá Módulos D, E e F. Requer que um PRD Draft gerado pela área de negócio exista (ou infira o contexto). Atualizará o PRD completando as lacunas (ex: v1.0).
-- **`full` (Padrão caso nenhuma fase seja informada)**: Executa o fluxo completo (Módulos A a F).
+A sintaxe recomendada é `/prd [contexto]`. O argumento é opcional.
 
 Interprete o contexto assim:
 - **Sem contexto** → pergunte ao usuário o que será documentado.
@@ -57,17 +54,13 @@ Execute as verificações abaixo **antes** de qualquer pergunta ao usuário:
    → texto livre
    ```
 
-4. **Identifique a Fase**: Se o comando incluiu a fase `ti`, verifique qual PRD Draft em `docs/prd/` o usuário quer complementar. Se a fase for `negocio` ou `full`, inicie o fluxo correspondente.
-5. **Apresente o processo** em texto simples: "Vou conduzir o levantamento da fase solicitada de forma interativa. Pipeline: `/prd` → `/techspec` → `/tasks` → `/tdd` (por task)."
+4. **Apresente o processo** em texto simples: "Vou conduzir o levantamento de requisitos de negócio de forma interativa. Pipeline: `/prd` → `/designer` (features com UI) → `/techspec` → `/tasks` → `/tdd` (por task)."
 
 ---
 
 ## FASE 2 — Levantamento Estruturado (Entrevista Interativa)
 
-Conduza cada módulo de forma interativa **respeitando a Fase informada**:
-- **Se fase = `negocio`**: Conduza **APENAS** os Módulos A, B e C.
-- **Se fase = `ti`**: Assuma que A, B e C já estão definidos no PRD Draft. Conduza **APENAS** os Módulos D, E e F.
-- **Se fase = `full`**: Conduza todos os módulos de A a F.
+Conduza cada módulo de forma interativa. O foco é sempre **negócio**: problema, personas, requisitos funcionais e critérios de aceite. Não entre em decisões de stack, arquitetura ou implementação — registre como "A definir em `/techspec`".
 
 Abaixo estão os módulos com as perguntas e os formatos recomendados:
 
@@ -351,24 +344,25 @@ Opções:
 
 ## FASE 4 — Geração do Documento PRD
 
-Gere o documento completo usando exatamente este template.
+**Salvamento progressivo — obrigatório:**
+Não acumule o documento inteiro no contexto antes de salvar. Siga esta sequência:
+1. Crie o arquivo imediatamente com o cabeçalho (metadados do template) usando `Write`.
+2. Após concluir cada capítulo numerado, adicione-o ao arquivo em disco com `append` antes de iniciar o próximo.
+3. Se o contexto esgotar durante a geração, o conteúdo já salvo não se perde.
+A FASE 5 apenas atualiza `memory/state.md` — não re-salva o documento.
 
-**Se for fase `negocio`**: 
-- Preencha os Capítulos 1, 2 e 8. 
-- Mantenha os demais Capítulos com o texto "> *A definir pela área de TI na próxima fase*". 
-- Defina o **Status** como "Draft" e a **Versão** como "0.1".
-
-**Se for fase `ti` ou `full`**: 
-- Preencha todos os Capítulos. 
-- Defina o **Status** como "Aprovado para Especificação" e a **Versão** como "1.0" (ou incremente se for revisão).
+Gere o documento de negócio usando exatamente este template.
+- Preencha todos os capítulos de negócio (1, 2, 3, 4, 5, 8).
+- Capítulos técnicos (6, 7) ficam com `> *A definir em /techspec*`.
+- **Status:** "Aprovado para Especificação" | **Versão:** "1.0" (ou incremente se revisão).
 
 ````markdown
 # PRD: [Nome do Projeto/Feature]
 
-**Versão:** [0.1 se Negócio / 1.0 se TI ou Full]
+**Versão:** 1.0
 **Data:** [data atual]
 **Autor:** [nome coletado na Fase 1]
-**Status:** [Draft / Aprovado para Especificação]
+**Status:** Aprovado para Especificação
 **Próxima revisão:** [sugerir data em 1 semana]
 
 ---
@@ -523,9 +517,13 @@ Gere o documento completo usando exatamente este template.
 
 ---
 
-## FASE 5 — Salvamento
+## FASE 5 — Finalização
 
-1. Salve o documento em `docs/prd/[nome-kebab-case]-prd.md`.
+1. Valide o arquivo gerado:
+   ```
+   pwsh .agents/skills/prd/scripts/validate.ps1 -File docs/prd/[nome-kebab-case]-prd.md
+   ```
+   Se retornar ❌, corrija as seções ausentes antes de prosseguir.
 2. Atualize `memory/state.md` — seção **Features Ativas**:
    - Nome da feature, versão do PRD, caminho do arquivo, status `Em especificação`
    - RFs Must Have (títulos apenas, uma linha cada)
@@ -540,8 +538,11 @@ Com o PRD salvo em disco, submeta-o a revisão antes de liberar para o `/techspe
    > "O PRD foi gerado e salvo. Deseja que eu submeta os requisitos ao **Comitê de Especialistas** (Qualidade, Segurança, Arquitetura e DevOps) no background para revisão crítica antes de avançar para o `/techspec`? [Sim / Não]"
 
 2. **Se o usuário disser "Sim":**
-   - Utilize as ferramentas de orquestração do seu ambiente (ex: `invoke_subagent` no Antigravity) para invocar os agentes, instruindo-os a **ler o PRD recém-salvo** em `docs/prd/`.
-   - *Se não houver suporte a subagentes:* Simule as personas de Qualidade, Segurança, Arquitetura e DevOps em uma auto-reflexão profunda no próprio chat.
+   - Invoque os sub-agentes especializados usando o mecanismo nativo do seu ambiente, instruindo-os a **ler o PRD recém-salvo** em `docs/prd/`.
+     - Claude Code: ferramenta `Task` + agentes em `.claude/agents/`
+     - Antigravity: `invoke_subagent`
+     - Codex / outros: mecanismo nativo de sub-agentes
+   - *Se o ambiente não suportar sub-agentes:* Simule as personas de Qualidade, Segurança, Arquitetura e DevOps em auto-reflexão no próprio chat.
    - Apresente o feedback consolidado ao usuário.
    > "O comitê analisou o PRD:
    > - **Qualidade:** [Ponto levantado]
@@ -561,7 +562,10 @@ Informe ao usuário:
 - Caminho do arquivo salvo
 - Quantos RFs foram documentados e suas prioridades
 - Questões em aberto que precisam de atenção
-- **Próximo passo:** Execute `/techspec` para gerar as especificações técnicas baseadas neste PRD. Pipeline completo: `/techspec` → `/tasks` → `/tdd` (por task).
+- **Próximo passo:** 
+  - Se a feature tem interface visual → Execute `/designer` para a discovery de UX antes de iniciar o `/techspec`. O design brief gerado informará as decisões de arquitetura frontend.
+  - Se é feature puramente backend/API → Execute `/techspec` diretamente.
+  - Pipeline completo: `/prd` → `/designer` (se UI) → `/techspec` → `/tasks` → `/tdd` (por task).
 
 ---
 

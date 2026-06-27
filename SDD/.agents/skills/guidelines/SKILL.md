@@ -548,6 +548,116 @@ Opções:
 ### Módulo J — Design e UI/UX
 > Pule se o projeto for puramente backend/API ou se for uma CLI sem interface gráfica.
 
+**Antes de qualquer pergunta do Módulo J — detecção e validação de design system pré-existente (silenciosa):**
+
+**Passo 1 — Detecção:** verifique na seguinte ordem e leia tudo que encontrar:
+1. `DESIGN.md` na raiz do projeto
+2. `guidelines/design.md` com conteúdo (não apenas placeholder)
+3. `design/tokens/design-tokens.json`
+4. Diretório de tema no código (`src/theme/`, `styles/tokens/`, `design-system/` ou equivalente)
+
+**Passo 2 — Extração:** se qualquer fonte foi encontrada, extraia e registre internamente:
+
+| Campo | Extraído? | Valor |
+|-------|-----------|-------|
+| Cor primária (hex) | sim/não | `#XXXXXX` |
+| Cor acento (hex) | sim/não | `#XXXXXX` |
+| Fundo / texto / erro / sucesso (hex) | sim/não | ... |
+| Tipografia (fonte + peso + tamanho base) | sim/não | ... |
+| Border radius (sm/md/lg) | sim/não | ... |
+| Espaçamento base | sim/não | ... |
+| Biblioteca de componentes | sim/não | ... |
+| Inventário de componentes (Button, Input, Table mínimos) | sim/não | ... |
+| Ícones | sim/não | ... |
+| Breakpoints definidos | sim/não | ... |
+| Estratégia de responsividade | sim/não | ... |
+| Nível WCAG | sim/não | ... |
+| Contraste mínimo | sim/não | ... |
+
+**Passo 3 — Validação de gaps:** para cada campo marcado como "não", pergunte ao usuário de forma cirúrgica — apenas os gaps, nunca o que já foi extraído.
+
+Informe primeiro o que foi encontrado:
+> "Design system detectado em `[caminho]`. Extraí: [lista resumida do que foi coberto]. Precisarei de complemento para: [lista dos gaps]."
+
+Em seguida, conduza **apenas as perguntas de gap** abaixo que se aplicarem — pule todas as demais:
+
+**[Gap: tokens de cor incompletos]**
+```
+Pergunta interativa | header: "Cores faltantes"
+Pergunta: "Os seguintes tokens de cor não foram encontrados: [lista]. Quais são os valores hex?"
+→ Texto livre por token
+```
+
+**[Gap: tipografia ausente]**
+```
+Pergunta interativa | header: "Tipografia"
+Pergunta: "Qual a fonte principal de UI e seus pesos? (ex: Inter 400/600)"
+→ Texto livre
+```
+
+**[Gap: biblioteca de componentes indefinida]**
+```
+Pergunta interativa | header: "Componentes UI" | multiSelect: false
+Pergunta: "Qual a estratégia base para os componentes de interface?"
+Opções:
+- Componentes 100% customizados (Tailwind, CSS puro, etc)
+- Biblioteca unstyled/headless (ex: Radix UI, Headless UI) + Customização
+- Biblioteca opinionada completa (ex: Material UI, Ant Design, Chakra UI)
+- Outro (descreva)
+```
+
+**[Gap: inventário de componentes ausente]**
+```
+Pergunta interativa | header: "Inventário de componentes"
+Pergunta: "Quais são os componentes padrão do projeto? Liste nome e localização no código (ex: Button → src/components/Button)."
+→ Texto livre
+```
+
+**[Gap: ícones indefinidos]**
+```
+Pergunta interativa | header: "Ícones" | multiSelect: false
+Pergunta: "Qual o padrão de iconografia adotado?"
+Opções:
+- Phosphor Icons / Lucide Icons
+- Material Icons / FontAwesome
+- SVGs customizados
+- Outro (descreva)
+```
+
+**[Gap: breakpoints ausentes]**
+```
+Pergunta interativa | header: "Breakpoints"
+Pergunta: "Quais são os breakpoints definidos? (ex: sm=640px, md=768px, lg=1024px)"
+→ Texto livre
+```
+
+**[Gap: responsividade indefinida]**
+```
+Pergunta interativa | header: "Responsividade" | multiSelect: false
+Pergunta: "Qual a abordagem de layout?"
+Opções:
+- Mobile First
+- Desktop First
+- Ambos — responsivo clássico
+- Outro (descreva)
+```
+
+**[Gap: acessibilidade indefinida]**
+```
+Pergunta interativa | header: "Acessibilidade" | multiSelect: false
+Pergunta: "Qual o nível mínimo de acessibilidade exigido?"
+Opções:
+- WCAG AA (contraste 4.5:1 — padrão recomendado)
+- WCAG AAA (contraste 7:1 — nível mais restritivo)
+- Sem requisito formal definido
+- Outro (descreva)
+```
+
+**Se nenhum artefato foi encontrado (projeto sem design system):** conduza J1–J5 completos normalmente.
+
+**Se todos os campos foram extraídos sem gaps:** informe ao usuário e pule J1–J5 integralmente.
+> "Design system completamente mapeado em `[caminho]` — nenhuma pergunta adicional necessária para o Módulo J."
+
 **J1** — Identidade Visual e Tokens
 ```
 Pergunta interativa | header: "Identidade Visual" | multiSelect: false
@@ -942,27 +1052,107 @@ Gere com base no Módulo I. Esqueleto:
 
 ### `guidelines/design.md`
 
-Gere com base nas respostas do Módulo J. Use este esqueleto:
+Gere com base nas respostas do Módulo J (ou dos artefatos detectados na FASE 1 / detecção silenciosa do Módulo J). Este arquivo é lido pelo `/designer` e pelo agente prototipador — use valores exatos, não descrições vagas.
+
+Se o conteúdo foi extraído de um arquivo externo (`DESIGN.md`, `src/theme/`, etc.), adicione no topo:
+```markdown
+> **Fonte primária:** os valores canônicos estão em [`DESIGN.md`](../DESIGN.md) (ou caminho equivalente). Este arquivo registra apenas os itens complementares não cobertos por ela.
+```
+
+Template:
 
 ```markdown
 # Diretrizes de Design e UI/UX
 
-## Identidade Visual e Tokens
-- **Status Atual:** [Descreva o status mapeado, ex: Já existem artefatos em `design/tokens.json`]
-- **Referências/Documentação:** [Link ou localização dos artefatos de design/briefing, se aplicável]
+> Lido por: `/designer` (skill e agente), agente prototipador, `/techspec`.
+> Fonte: [gerado pelo /guidelines em DD/MM/AAAA | extraído de DESIGN.md | extraído de src/theme/]
 
-## Estratégia de Componentes e Assets
-- **Abordagem de UI:** [Ex: Biblioteca Unstyled + Tailwind]
-- **Bibliotecas Base:** [Ex: Radix UI, Headless UI]
-- **Ícones:** [Ex: Phosphor Icons via CDN]
+---
 
-## Comportamento e Layout
-- **Responsividade:** [Ex: Mobile First rígido]
-- **Animações e Micro-interações:** [Ex: Apenas transições CSS simples]
+## 1. Tokens Visuais
 
-## Regras de Consistência
-- Não sobrescrever ou recriar tokens manualmente (cores, fontes, espaçamentos) que já estejam definidos no arquivo de design principal ou no briefing gerado pelo `/designer`.
-- Seguir estritamente o ecossistema de componentes escolhido.
+| Token | Valor | Uso |
+|-------|-------|-----|
+| Cor primária | `#XXXXXX` | CTAs, links ativos |
+| Cor de acento | `#XXXXXX` | Highlights, badges |
+| Fundo (light) | `#XXXXXX` | Background padrão |
+| Fundo (dark) | `#XXXXXX` | Background dark mode |
+| Texto principal | `#XXXXXX` | Body text |
+| Texto secundário | `#XXXXXX` | Labels, captions |
+| Erro | `#XXXXXX` | Estados de erro |
+| Sucesso | `#XXXXXX` | Confirmações |
+| Aviso | `#XXXXXX` | Alertas |
+| Border radius SM | `Xpx` | Inputs, chips |
+| Border radius MD | `Xpx` | Cards |
+| Border radius LG | `Xpx` | Modais, painéis |
+| Espaçamento base | `Xpx` | Grid unit |
+
+**Tipografia:**
+| Papel | Fonte | Peso | Tamanho base |
+|-------|-------|------|--------------|
+| Display / Heading | [fonte] | [peso] | [tamanho] |
+| Body / UI | [fonte] | [peso] | [tamanho] |
+| Code / Mono | [fonte] | [peso] | [tamanho] |
+
+**Tema:** [ ] Light only [ ] Dark only [ ] Ambos (toggle obrigatório no protótipo)
+
+---
+
+## 2. Biblioteca de Componentes
+
+**Abordagem:** [100% custom | unstyled/headless + customização | biblioteca opinionada]
+**Biblioteca base:** [ex: Radix UI, Material UI, Ant Design, nenhuma]
+**Ícones:** [ex: Phosphor Icons, Lucide, Material Icons, SVGs customizados]
+
+### Inventário de Componentes Padrão
+
+| Componente | Localização no código | Variantes disponíveis | Notas de uso |
+|------------|----------------------|----------------------|--------------|
+| Button | `src/components/Button` | primary, secondary, ghost, danger | Mínimo 44px altura mobile |
+| Input | `src/components/Input` | default, error, disabled | Sempre com label acessível |
+| Table | `src/components/Table` | sortable, paginated | Usar para listagens > 5 itens |
+| Modal | `src/components/Modal` | sm, md, lg | Focar no primeiro elemento interativo |
+| Toast/Alert | `src/components/Toast` | success, error, warning, info | Duração padrão: 4s |
+| [adicione conforme o projeto] | | | |
+
+> **Regra absoluta para o prototipador:** nunca inventar componentes fora deste inventário. Se um componente necessário não estiver listado, registre como gap no `screen-map.md`.
+
+---
+
+## 3. Layout e Responsividade
+
+**Estratégia:** [Mobile First | Desktop First | Ambos]
+**Breakpoints:**
+| Nome | Largura mínima | Uso |
+|------|---------------|-----|
+| sm | `640px` | Smartphones landscape |
+| md | `768px` | Tablets |
+| lg | `1024px` | Desktops |
+| xl | `1280px` | Desktops wide |
+
+**Grid:** [ex: 12 colunas, gap de 16px]
+**Animações:** [ex: apenas transições CSS simples, max 200ms | Framer Motion | nenhuma]
+
+---
+
+## 4. Acessibilidade (Corporativa)
+
+- **Nível mínimo:** WCAG [AA | AAA]
+- **Contraste texto normal:** ≥ 4.5:1
+- **Contraste texto grande (≥ 18pt):** ≥ 3:1
+- **Hit-targets mínimos:** 44×44px (mobile) / 32×32px (desktop)
+- **Navegação por teclado:** [obrigatória | não requerida]
+- **Leitor de tela:** [obrigatório — `aria-label` em todos os ícones sem texto | não requerido]
+- **Internacionalização:** [apenas PT-BR | multilíngue — impacto em layout: sim/não]
+
+---
+
+## 5. Regras de Consistência
+
+- Nunca sobrescrever tokens definidos neste arquivo com valores hardcoded.
+- Nunca criar componente novo sem antes verificar o inventário (seção 2).
+- O design brief gerado pelo `/designer` complementa este arquivo — não o substitui.
+- Em caso de conflito entre este guideline e o design brief: **este guideline prevalece**.
 ```
 
 ---
@@ -974,7 +1164,8 @@ Antes de salvar, verifique se os arquivos gerados atendem ao mínimo necessário
 | Skill | Arquivos obrigatórios | Campos mínimos |
 |-------|----------------------|----------------|
 | `/prd` | `stack.md` | linguagem, framework principal |
-| `/techspec` | `stack.md`, `architecture.md`, `api-conventions.md`, `security.md` | stack completa, padrão arquitetural, envelope de resposta, modelo de autenticação |
+| `/designer` | `design.md` | tokens (hex exatos), inventário de componentes, breakpoints, acessibilidade |
+| `/techspec` | `stack.md`, `architecture.md`, `api-conventions.md`, `security.md`, `design.md` (se UI) | stack completa, padrão arquitetural, envelope de resposta, modelo de autenticação |
 | `/tasks` | `coding-standards.md`, `testing.md` | nomenclatura, estrutura de teste, cobertura mínima |
 | `/implement` | todos acima + `git-workflow.md` | convenções de commit e branch |
 | `/code_review` | `coding-standards.md`, `security.md` | regras de estilo, checklist de segurança |

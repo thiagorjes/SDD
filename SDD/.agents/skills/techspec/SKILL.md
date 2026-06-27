@@ -88,7 +88,13 @@ Execute **antes** de qualquer geração:
 2. **Leia o PRD** em `docs/prd/` (o mais recente ou o especificado nos argumentos). Se não existir PRD:
    > "Nenhum PRD encontrado em `docs/prd/`. Execute `/prd` primeiro para documentar os requisitos de negócio."
 
-3. **Faça um mapa dos requisitos**: Liste os RFs, RNFs, integrações e restrições do PRD que guiarão as decisões técnicas.
+3. **Leia o Design Brief** em `design/tokens/design-brief.md` (se existir):
+   - O brief define fluxos de telas, componentes, navegação e interações já validados com o usuário.
+   - Esses insumos informam diretamente: estrutura de rotas, contratos de API frontend-driven, estratégia de estado e componentização.
+   - Se o arquivo não existir e a feature tiver interface visual:
+     > "Nenhum design brief encontrado. Recomendo executar `/designer` antes do `/techspec` para que as decisões de UX informem a arquitetura. Deseja prosseguir sem o brief?"
+
+4. **Faça um mapa dos requisitos**: Liste os RFs, RNFs, integrações, restrições do PRD e decisões de UX do brief que guiarão as decisões técnicas.
 
 ---
 
