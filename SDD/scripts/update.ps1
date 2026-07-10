@@ -39,11 +39,14 @@ if (-not $Source) { $Source = Split-Path $PSScriptRoot -Parent }
 $src = (Resolve-Path $Source).Path
 $ws  = (Resolve-Path $Workspace).Path
 
-if ($src -eq $ws) {
-    Write-Host "Workspace e o proprio repositorio SDD — nada a fazer." -ForegroundColor Yellow
-    exit 0
+# Origem = destino acontece quando o script roda da copia do toolset dentro do proprio
+# workspace. Nesse caso a migracao de layout ainda e executada; apenas o sync e pulado.
+$doSync = $src -ne $ws
+if (-not $doSync) {
+    Write-Warn "Origem = destino (script rodando de dentro do workspace) — sync do toolset sera pulado."
+    Write-Warn "Para atualizar o toolset, aponte a origem: update.ps1 -Workspace . -Source <caminho-do-repo-SDD>"
 }
-if (-not (Test-Path (Join-Path $src ".agents"))) {
+if ($doSync -and -not (Test-Path (Join-Path $src ".agents"))) {
     Write-Host "Origem invalida: $src nao contem .agents/ (aponte -Source para o repositorio SDD)." -ForegroundColor Red
     exit 1
 }
@@ -58,10 +61,31 @@ Write-Host ""
 
 $systemsDir  = Join-Path $ws "systems"
 $rootGl      = Join-Path $ws "guidelines"
-$needsLayout = -not (Test-Path $systemsDir)
+# Layout antigo: sem systems/ OU systems/ vazio (ex: execucao anterior interrompida)
+$needsLayout = (-not (Test-Path $systemsDir)) -or (@(Get-ChildItem $systemsDir -Directory -ErrorAction SilentlyContinue).Count -eq 0)
+
+# Guarda: so migra se o destino for de fato um workspace SDD (layout antigo).
+# Uma raiz de projeto comum (src/, package.json...) NAO e um workspace — use o init.ps1.
+$isSddWorkspace = (Test-Path (Join-Path $ws "memory/state.md")) -or (Test-Path (Join-Path $ws ".agents"))
+if ($needsLayout -and -not $isSddWorkspace) {
+    Write-Host "Este diretorio nao parece ser um workspace SDD (sem memory/state.md nem .agents/)." -ForegroundColor Red
+    Write-Host "Se isto e a raiz de um projeto/repositorio, use o init.ps1 para criar um workspace" -ForegroundColor Yellow
+    Write-Host "e registrar este projeto como sistema (cenario 2=existente ou 3=legado)." -ForegroundColor Yellow
+    exit 1
+}
 
 if ($needsLayout) {
     Write-Host "Layout antigo detectado (sem systems/). Iniciando migracao..." -ForegroundColor Cyan
+
+    # Segunda guarda: se a raiz parece codigo-fonte (nao uma colecao de projetos), aborta.
+    $sourceMarkers = @("src", "package.json", "pyproject.toml", "pom.xml", "go.mod", "Cargo.toml", "node_modules")
+    $foundMarkers = $sourceMarkers | Where-Object { Test-Path (Join-Path $ws $_) }
+    if ($foundMarkers) {
+        Write-Host "A raiz contem marcadores de codigo-fonte ($($foundMarkers -join ', '))." -ForegroundColor Red
+        Write-Host "Isto parece ser a raiz de um projeto, nao um workspace SDD — migracao abortada." -ForegroundColor Yellow
+        Write-Host "Use o init.ps1 para criar o workspace e registrar este projeto como sistema." -ForegroundColor Yellow
+        exit 1
+    }
 
     # Candidatos a pasta do projeto: diretorios na raiz que nao sao do toolset/artefatos
     $known = @(".agents", ".claude", ".git", ".test-logs", "docs", "design", "guidelines", "memory", "scripts", "systems")
@@ -124,6 +148,13 @@ if ($needsLayout) {
 }
 
 # ── 2. Sync do toolset ────────────────────────────────────────────────────────
+
+if (-not $doSync) {
+    Write-Host ""
+    Write-Host "=== Concluido (somente migracao de layout; sync do toolset pulado) ===" -ForegroundColor Cyan
+    Write-Host ""
+    exit 0
+}
 
 Write-Host ""
 Write-Host "Sincronizando toolset..." -ForegroundColor Cyan
