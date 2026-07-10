@@ -18,40 +18,77 @@ Sua missão é materializar as definições de negócios (PRD) e de estética (d
 
 ## ETAPA 0 — Diagnóstico do Projeto (sempre primeiro, silencioso)
 
-Execute em paralelo:
+Leia na seguinte ordem de prioridade — fonte superior prevalece sobre fonte inferior em caso de conflito:
 
-1. Liste a raiz do projeto para entender a estrutura geral.
-2. Verifique se existe `design/tokens/design-brief.md` → leia-o se existir.
-3. Verifique se existe `design/prototypes/` → liste os protótipos existentes. Se houver, abra o mais recente para extrair o padrão visual real.
-4. Verifique se existe diretório de tema/design system no código-fonte (`src/theme/`, `theme/`, `src/styles/`, `styles/` ou equivalente) → leia os arquivos de cores, tipografia e tokens.
-5. Leia os componentes de UI reutilizáveis existentes (`src/components/`, `components/` ou equivalente) para entender o vocabulário visual já estabelecido.
+1. **`guidelines/design.md`** — design system corporativo. Se existir, é a fonte de verdade para tokens, componentes, breakpoints e regras de acessibilidade. Leia primeiro.
+2. **`DESIGN.md`** na raiz — alternativa agnóstica. Mesma autoridade que `guidelines/design.md`.
+3. **`design/tokens/design-brief.md`** — brief da feature atual. Complementa o design system com decisões específicas de fluxo e escopo.
+4. **`design/tokens/design-tokens.json`** — tokens gerados anteriormente. Use como confirmação dos valores do design system.
+5. **Diretório de tema no código** (`src/theme/`, `styles/tokens/`, `design-system/`) — leia para validar ou complementar tokens.
+6. **Componentes existentes** (`src/components/`, `components/`) — mapeie o inventário de componentes reutilizáveis. Consulte também o inventário em `guidelines/design.md` seção 2 se existir.
+7. **`design/prototypes/`** — liste protótipos anteriores. Abra o mais recente para entender o padrão visual estabelecido.
 
-**Regra absoluta:** nunca invente cores, fontes ou padrões de componente. Extraia tudo do projeto.  
-Se o projeto não tiver design system no código, use o `design-brief.md` como única fonte de verdade.
+**Regra absoluta:** nunca invente cores, fontes, espaçamentos ou componentes. Extraia tudo das fontes acima, na ordem de prioridade.
 
-Antes de escrever o HTML, documente internamente o sistema que vai usar:
+Antes de escrever qualquer HTML, consolide internamente:
 
 ```
-Cores:        [primária] [acento] [fundo] [texto] [erro] [sucesso]
-Tipografia:   [fonte de display] [fonte de UI]
-Espaçamento:  [base unit] [escala de gaps]
-Raios:        [sm] [md] [lg]
-Sombras/glow: [padrão] [elevado]
-Componentes existentes: [lista dos que serão reutilizados no HTML]
+Fonte primária dos tokens: [guidelines/design.md | DESIGN.md | src/theme/ | design-tokens.json]
+Cores:        primária=[#] acento=[#] fundo=[#] texto=[#] erro=[#] sucesso=[#]
+Tipografia:   display=[fonte/peso] UI=[fonte/peso]
+Espaçamento:  base=[Xpx] raios=[sm/md/lg]
+Componentes disponíveis: [lista dos que serão reutilizados — nome + localização]
+Componentes em falta (gap): [componentes necessários não encontrados no inventário]
 ```
 
 ---
 
-## ETAPA 1 — Absorção de Contexto
+## ETAPA 1 — Absorção de Contexto e Verificação de Cobertura
 
-- Leia `docs/prd/` para entender as regras de negócio e fluxos que precisam de telas.
-- Confirme quais telas/estados estão no escopo do protótipo conforme o `design-brief.md`.
+1. Leia o PRD em `docs/prd/` referenciado no design-brief.
+2. Extraia todos os RFs que implicam interface visual (telas, formulários, listagens, modais, notificações).
+3. Cruze com o **Inventário de Telas** (seção 3 do design-brief): todo RF com UI deve ter pelo menos uma tela mapeada.
+4. Se houver RF sem tela correspondente, registre como gap no `screen-map.md` (gerado na Etapa 2).
+5. Confirme quais telas e estados estão no escopo do protótipo conforme a seção 8 do design-brief.
 
 ---
 
-## ETAPA 2 — Geração de Tokens Visuais
+## ETAPA 2 — Screen Map e Tokens Visuais
 
-Crie ou atualize `design/tokens/design-tokens.json` com os valores **exatos** extraídos do código-fonte ou do brief (nunca valores aproximados ou genéricos).
+**2a. Gere `design/screen-map.md`** antes de qualquer HTML:
+
+```markdown
+# Screen Map: [Nome da Feature]
+
+**Gerado em:** [data]
+**PRD:** [caminho]
+**Design Brief:** design/tokens/design-brief.md
+
+## Cobertura de RFs
+
+| RF | Descrição | Tela(s) | Status |
+|----|-----------|---------|--------|
+| RF-001 | [descrição] | T01 | ✅ coberto |
+| RF-004 | [descrição] | — | ⚠️ sem tela mapeada |
+
+## Inventário de Telas
+
+| ID | Nome | Rota | Estados cobertos no protótipo |
+|----|------|------|-------------------------------|
+| T01 | [Nome] | /rota | idle, erro, vazio |
+| T02 | [Nome] | /rota/detalhe | loading, sucesso |
+
+## Fluxos
+
+**Happy path:** T01 → T02 → [confirmação]
+**Erro:** T01(erro) → [correção] → T02
+
+## Gaps Identificados
+
+- [RF sem tela, estado ausente, fluxo não coberto]
+```
+
+**2b. Crie ou atualize `design/tokens/design-tokens.json`** com os valores **exatos** extraídos do código-fonte ou do brief (nunca valores aproximados ou genéricos).
 
 ---
 
@@ -116,15 +153,24 @@ Arrays de dados fictícios declarados no topo do script — nunca hard-coded inl
 
 ## CHECKLIST ANTES DE ENTREGAR
 
+**Cobertura:**
+- [ ] `screen-map.md` gerado com tabela de cobertura de RFs
+- [ ] Todos os RFs com UI têm pelo menos uma tela mapeada (gaps documentados se houver)
+- [ ] Todos os estados obrigatórios do design-brief estão prototipados
+
+**Visual:**
 - [ ] Todas as cores batem com o design system real do projeto
 - [ ] A tipografia é a do projeto (não Inter/Roboto genérico)
 - [ ] O protótipo parece o app real (não um template genérico)
+- [ ] Contraste de texto ≥ 4.5:1 (normal) / ≥ 3:1 (grande) — WCAG AA
+- [ ] `design-tokens.json` atualizado com valores reais
+
+**Interatividade:**
 - [ ] Tweaks respondem em tempo real
 - [ ] Estados interativos funcionam (hover, click, transições)
 - [ ] Nenhum elemento sobrepõe outro indevidamente
 - [ ] Hit-targets respeitam o mínimo da plataforma (≥ 44px mobile)
 - [ ] O arquivo abre sem erros no browser
-- [ ] `design-tokens.json` foi atualizado com valores reais
 
 ---
 
@@ -132,4 +178,9 @@ Arrays de dados fictícios declarados no topo do script — nunca hard-coded inl
 
 Após salvar todos os arquivos, informe de forma direta:
 
-> "Protótipos gerados em `design/prototypes/<NomeFeature>.html`. Tokens atualizados em `design-tokens.json`. Abra o HTML no browser para revisar."
+> "Artefatos gerados:
+> - `design/screen-map.md` — cobertura de RFs e inventário de telas [N RFs cobertos, N gaps]
+> - `design/prototypes/<NomeFeature>.html` — protótipo navegável
+> - `design/tokens/design-tokens.json` — tokens atualizados
+>
+> Abra o HTML no browser para revisar. O `screen-map.md` pode ser usado pelo `/techspec` como referência de telas e rotas."

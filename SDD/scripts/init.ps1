@@ -254,7 +254,7 @@ $today      = (Get-Date).ToString("yyyy-MM-dd")
 $skillCount = if ($withDesign) { 12 } else { 11 }
 
 $pipeline = "/guidelines → /prd → [/clarify] → [/checklist]"
-if ($withDesign) { $pipeline += " → [/designer]" }
+if ($withDesign) { $pipeline += " → /designer" }
 $pipeline += " → /techspec → /tasks → [/analyze] → /implement (por task)"
 
 # state.md

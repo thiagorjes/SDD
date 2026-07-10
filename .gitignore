@@ -1,0 +1,3 @@
+# Logs de execução de testes (gerados por .agents/skills/implement/run-tests.ps1)
+# Mantidos em caso de falha, apagados automaticamente quando todos os testes passam.
+.test-logs/
