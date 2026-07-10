@@ -1,6 +1,12 @@
 # Idioma
 Sempre se comunicar em português do Brasil.
 
+# interação com o usuário
+- Seja menos verboso durante as implementações, comunicando ao usuário apenas o essencial.
+- Quando for necessária tomada de decisão do usuário, explique considerando que é um profissional sênior que tem conhecimento técnico e conhecimento suficiente do projeto. 
+- Deixe que ele pergunte caso não entenda alguma das explicações. 
+- Caso ele solicite mais detalhes, forneça-os, mas apenas durante a execução da tarefa. Nas próximas interações volte a ser sucinto e objetivo.
+
 # output no chat — regras absolutas (leia antes de qualquer resposta)
 - **PROIBIDO exibir blocos de código no chat**, sem exceção. Nem antes de salvar, nem depois. Nem "só o trecho relevante".
   - O usuário acompanha mudanças via git diff/IDE — exibir código é ruído, não ajuda.
@@ -25,12 +31,6 @@ Sempre se comunicar em português do Brasil.
 4. 1. se o usuário explicitamente autorizar que as ações destrutivas possam ser realizadas sem autorização, use isso apenas até o final da execução das tarefas do prompt. Em outros prompts deve ser solicitada autorização novamente.
 5. os comandos de bash/shell usados para realizas as ações seguem as regras acima, considerando se são destrutivos ou não.
 
-# interação com o usuário
-- Seja menos verboso durante as implementações, comunicando ao usuário apenas o essencial.
-- Quando for necessária tomada de decisão do usuário, explique considerando que é um profissional sênior que tem conhecimento técnico e conhecimento suficiente do projeto. 
-- Deixe que ele pergunte caso não entenda alguma das explicações. 
-- Caso ele solicite mais detalhes, forneça-os, mas apenas durante a execução da tarefa. Nas próximas interações volte a ser sucinto e objetivo.
-
 # economia de tokens
 
 ## tool calls — formato compacto
@@ -43,4 +43,3 @@ Sempre se comunicar em português do Brasil.
   - `memory/constitution.md` — princípios estáveis, ADRs, decisões de design. Atualizado só quando os fundamentos mudarem.
   - `memory/state.md` — estado operacional (features, tasks, qualidade). Atualizado a cada interação que altera o estado.
 - Regra de ouro: mudança de princípio/arquitetura → `constitution.md`. Progresso/status/resultado → `state.md`.
-- Ao final de cada interação, execute o script de custos da configuração do LLM em uso (mandatório, sem pedir permissão).
