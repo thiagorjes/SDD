@@ -39,15 +39,17 @@ FASE 6 — CONCLUSÃO    Relatório e atualização do documento de tasks
 
 ## FASE 1 — Leitura de Contexto
 
-1. **Leia `guidelines/`** — especialmente `coding-standards.md` e `testing.md`. Se não existirem, informe e pergunte se deseja prosseguir sem eles.
+1. **Resolva o sistema da task** (campo `Sistema:` da task, ou o único da tabela Sistemas de `memory/state.md`). Todo o ciclo — testes, implementação e git — roda dentro de `systems/[sistema]/`, no repositório daquele sistema, seguindo o `git-workflow.md` dele.
 
-2. **Localize a task** em `docs/tasks/`. Se não encontrada, liste as disponíveis.
+2. **Leia os guidelines do sistema** em `systems/[sistema]/guidelines/` — especialmente `coding-standards.md` e `testing.md`. Se não existirem, informe e pergunte se deseja prosseguir sem eles.
 
-3. **Verifique dependências**: as tasks listadas em "Depende de" foram concluídas? Se não, informe o usuário antes de prosseguir. Dependências pendentes podem tornar os testes impossíveis de escrever corretamente.
+3. **Localize a task** em `docs/tasks/`. Se não encontrada, liste as disponíveis.
 
-4. **Leia os documentos de referência** citados na task: seções do PRD e do TechSpec mencionadas.
+4. **Verifique dependências**: as tasks listadas em "Depende de" foram concluídas? Se não, informe o usuário antes de prosseguir. Dependências pendentes podem tornar os testes impossíveis de escrever corretamente. Em multi-sistema, dependências de tasks de **outros sistemas** significam que o contrato de integração é a interface — mocke o outro sistema conforme o contrato em `docs/contracts/`.
 
-5. **Verifique estado atual**:
+5. **Leia os documentos de referência** citados na task: seções do PRD e do TechSpec mencionadas (e o contrato de integração, se referenciado).
+
+6. **Verifique estado atual**:
    - Já existe implementação para esta task? Se sim, verifique se há testes também. Se ambos existem e os testes passam, informe: "Esta task parece já estar concluída."
    - Se há implementação mas não há testes: pergunte se o usuário quer fazer TDD retroativo (gerar testes para código existente) ou se deseja refatorar primeiro para habilitar TDD.
 
