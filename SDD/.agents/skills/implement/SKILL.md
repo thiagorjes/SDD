@@ -97,22 +97,27 @@ Reporte:
 
 Execute **antes de qualquer implementação** — inclusive antes do Ciclo TDD quando ativado:
 
-1. **Leia todos os arquivos em `guidelines/`** — são os padrões que TODA implementação deve seguir. Se não existir:
-   > "A pasta `guidelines/` não foi encontrada. Execute `/guidelines` para configurar os padrões do projeto antes de implementar."
+1. **Resolva o sistema da task**: leia o campo `Sistema:` da task (ou a tabela Sistemas de `memory/state.md`, se único). **Todo o trabalho desta skill acontece dentro de `systems/[sistema]/`** — criação/edição de arquivos, execução de testes e comandos git rodam nesse diretório, no repositório daquele sistema.
 
-2. **Identifique o documento de tasks** em `docs/tasks/`. Se não existir:
+2. **Leia os guidelines do sistema** em `systems/[sistema]/guidelines/` — são os padrões que TODA implementação deve seguir, incluindo o `git-workflow.md` **daquele sistema** (branch, commits). Se não existirem:
+   > "O sistema [X] não tem guidelines. Execute `/guidelines [X]` antes de implementar."
+
+3. **Verifique a branch**: se a task pertence a uma feature com Plano Git Multi-Sistema (documento de tasks), confirme/crie a branch da feature no repositório do sistema (ex: `feature/[nome]`) conforme o `git-workflow.md` dele, antes de alterar arquivos.
+
+4. **Identifique o documento de tasks** em `docs/tasks/`. Se não existir:
    > "Nenhum documento de tasks encontrado. Execute `/prd` → `/techspec` → `/tasks` para gerar as tarefas antes de implementar."
 
-3. **Localize a task especificada** no documento. Se o ID/título não for encontrado:
+5. **Localize a task especificada** no documento. Se o ID/título não for encontrado:
    - Liste as tasks disponíveis agrupadas por Epic
    - Pergunte qual o usuário deseja executar
 
-4. **Leia os documentos de referência da task**:
+6. **Leia os documentos de referência da task**:
    - PRD indicado na task (`PRD: RF-XXX`)
    - TechSpec indicado na task (seção relevante)
+   - Contrato de integração (`docs/contracts/`), se a task o referencia — trate-o como imutável
    - Guidelines específicos mencionados na task
 
-5. **Verifique o estado atual**:
+7. **Verifique o estado atual**:
    - Existe código relevante já implementado? (arquivos mencionados na task)
    - As tasks dependências desta foram concluídas? (campo "Depende de")
    - Se houver dependências pendentes, informe e pergunte se deve prosseguir mesmo assim.
@@ -276,6 +281,7 @@ Ao finalizar, apresente:
 
 Atualize `memory/state.md` — seção **Tasks**:
 - Marque a task como concluída, incrementando o contador de progresso da feature
+- Em features multi-sistema: registre/atualize por sistema a branch e o PR (ex: `gateway: feature/novo-login → PR #42 (aberto)`) — é o painel que responde "a feature está pronta onde?"
 - Se for a última task: atualize status da feature para `Em review`
 
 Após apresentar o relatório, **atualize o documento de tasks** em `docs/tasks/`: adicione `✅ Concluída` ao lado do título da task e a data de conclusão. Isso mantém o rastreamento do progresso visível para toda a equipe.

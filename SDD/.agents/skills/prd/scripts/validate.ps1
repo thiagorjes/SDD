@@ -26,9 +26,10 @@ if ([string]::IsNullOrWhiteSpace($content)) {
 
 # Seções obrigatórias (presentes independente da fase negocio/ti/full)
 $required = @(
-    @{ Pattern = "^## 1\."; Label = "Cap 1 — Visão Geral" },
-    @{ Pattern = "^## 2\."; Label = "Cap 2 — Usuários e Stakeholders" },
-    @{ Pattern = "^## 8\."; Label = "Cap 8 — Glossário / Referências" },
+    @{ Pattern = "(?m)^## 1\."; Label = "Cap 1 — Visão Geral" },
+    @{ Pattern = "(?m)^## 2\."; Label = "Cap 2 — Usuários e Stakeholders" },
+    @{ Pattern = "(?m)^## 3\."; Label = "Cap 3 — Requisitos Funcionais" },
+    @{ Pattern = "(?m)^## 8\."; Label = "Cap 8 — Métricas de Sucesso" },
     @{ Pattern = "\*\*Versão:\*\*";  Label = "Metadado: Versão" },
     @{ Pattern = "\*\*Status:\*\*";  Label = "Metadado: Status" },
     @{ Pattern = "RF-\d{3}";         Label = "Pelo menos um RF numerado (RF-XXX)" }

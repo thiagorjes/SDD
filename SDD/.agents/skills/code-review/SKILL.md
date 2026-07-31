@@ -19,7 +19,9 @@ Formatos aceitos:
 
 ## FASE 1 — Coleta de Contexto
 
-1. **Obtenha os arquivos a revisar via script:**
+1. **Resolva o sistema em revisão**: identifique a qual `systems/[sistema]/` as mudanças pertencem (campo `Sistema:` da task, ou o repositório onde estão os arquivos alterados). O diff e os comandos git rodam **dentro do repositório desse sistema**.
+
+2. **Obtenha os arquivos a revisar via script** (a partir de `systems/[sistema]/`):
    ```
    pwsh .agents/skills/code-review/scripts/changed-files.ps1
    ```
@@ -28,14 +30,15 @@ Formatos aceitos:
    - Se git não estiver disponível: use os arquivos passados nos argumentos, ou pergunte ao usuário.
    - Se os argumentos contiverem caminhos de arquivo: revise esses arquivos diretamente.
 
-2. **Leia os guidelines relevantes**:
-   - `guidelines/coding-standards.md` — sempre
-   - `guidelines/security.md` — sempre
-   - `guidelines/testing.md` — se houver arquivos de teste nas mudanças
-   - `guidelines/api-conventions.md` — se houver endpoints nas mudanças
-   - `guidelines/observability.md` — se houver logs/métricas nas mudanças
+3. **Leia os guidelines relevantes do sistema** (`systems/[sistema]/guidelines/`):
+   - `coding-standards.md` — sempre
+   - `security.md` — sempre
+   - `testing.md` — se houver arquivos de teste nas mudanças
+   - `api-conventions.md` — se houver endpoints nas mudanças
+   - `observability.md` — se houver logs/métricas nas mudanças
+   - `docs/contracts/[contrato].md` (do workspace) — se a mudança implementa um contrato de integração: verifique aderência exata (campos, erros, compatibilidade retroativa)
 
-3. **Identifique a task relacionada** (se os argumentos contiverem um ID de task, ex: `TASK-2.1`):
+4. **Identifique a task relacionada** (se os argumentos contiverem um ID de task, ex: `TASK-2.1`):
    - Normalize o ID: `TASK-2.1` → busque `task-2.1.md` nas subpastas de `docs/tasks/`
    - Se encontrado, leia o arquivo individual `docs/tasks/[feature]/task-2.1.md` diretamente
    - Se não encontrado, faça fallback: busque o ID no documento principal `docs/tasks/*-tasks.md`
@@ -43,9 +46,9 @@ Formatos aceitos:
    - Extraia os "pontos de atenção" listados na task
    - Ao concluir o review, se houver findings 🔴 ou 🟡: registre-os na seção `## Histórico de Issues` do arquivo individual da task (data atual, descrição resumida, status `Aberta`)
 
-4. **Leia o TechSpec relevante** se os arquivos modificados corresponderem a uma especificação em `docs/techspec/`.
+5. **Leia o TechSpec relevante** se os arquivos modificados corresponderem a uma especificação em `docs/techspec/`.
 
-5. **Execute os testes antes de revisar**:
+6. **Execute os testes antes de revisar**:
    ```bash
    [comando de teste]
    ```

@@ -23,18 +23,20 @@ Formatos aceitos:
 
 Execute **antes** de qualquer geração:
 
-1. **Leia todos os arquivos em `guidelines/`** — as tarefas devem referenciar os padrões específicos do projeto. Se a pasta não existir:
-   > "A pasta `guidelines/` não foi encontrada. Execute `/guidelines` para configurar os padrões — sem eles, as tasks não conseguirão referenciar convenções de código, estrutura de testes ou padrões de arquitetura. Posso prosseguir, mas as tasks ficarão sem referências concretas de guidelines."
-   
-   Pergunte se o usuário quer prosseguir mesmo assim. Se sim, nas referências de cada task use `guidelines/[arquivo].md` como placeholder com nota `⚠️ criar guidelines antes de implementar`.
+1. **Leia `memory/state.md`** — bloco de handoff da feature (sistemas afetados, artefatos) e tabela **Sistemas** (caminho, cenário, guidelines).
 
-2. **Leia o PRD mais recente** (ou o especificado) em `docs/prd/`. Se não existir:
+2. **Leia os guidelines dos sistemas afetados** — `systems/[sistema]/guidelines/` (especialmente `coding-standards.md`, `testing.md`, `git-workflow.md` de cada um). Se algum estiver pendente:
+   > "O sistema [X] não tem guidelines. Execute `/guidelines [X]` — sem eles, as tasks não conseguirão referenciar convenções de código, estrutura de testes ou padrões de arquitetura."
+
+   Pergunte se o usuário quer prosseguir mesmo assim. Se sim, nas referências use placeholder com nota `⚠️ criar guidelines antes de implementar`.
+
+3. **Leia o PRD mais recente** (ou o especificado) em `docs/prd/`. Se não existir:
    > "Nenhum PRD encontrado. Execute `/prd` primeiro."
 
-3. **Leia o TechSpec mais recente** (ou o correspondente ao PRD) em `docs/techspec/`. Se não existir:
+4. **Leia o(s) TechSpec(s)** em `docs/techspec/`. Em features multi-sistema: todos os techspecs da feature (um por sistema) **e o contrato de integração** em `docs/contracts/`. Se não existir:
    > "Nenhum TechSpec encontrado. Execute `/techspec` primeiro."
 
-4. **Faça o mapeamento**: Identifique todos os RFs, RNFs, entidades, endpoints e áreas de trabalho dos documentos lidos.
+5. **Faça o mapeamento**: Identifique todos os RFs, RNFs, entidades, endpoints e áreas de trabalho dos documentos lidos — anotando **a qual sistema** cada item pertence.
 
 ---
 
@@ -58,7 +60,13 @@ Antes de gerar as tarefas, defina:
 
 6. **Verificação de cobertura**: Monte uma tabela de mapeamento RF → Tasks antes de gerar o documento. Todo RF do PRD deve ter ao menos uma task associada. RFs sem cobertura são um bloqueador — não gere o documento sem resolvê-los.
 
-7. **Restrições de sprint/prioridade**: Se o sprint não foi especificado nos argumentos, pergunte ao usuário se há restrições. Se o sprint já está nos argumentos (ex: `"Sprint 1"`), pule esta pergunta.
+7. **Multi-sistema — agrupamento, branches e ordem de merge** (somente se a feature afeta 2+ sistemas):
+   - Cada task pertence a **um único sistema** (campo `Sistema:` na task) — tasks que "tocariam dois sistemas" devem ser divididas, conectadas pelo contrato de integração.
+   - Defina a **convenção de branch da feature** conforme o `git-workflow.md` de cada sistema (padrão sugerido: `feature/[nome-da-feature]` em cada repo afetado).
+   - Defina a **ordem de merge entre repositórios**, derivada das dependências (ex: api-auth emite JWT v2 → gateway aceita → consumidores validam → frontend consome). Mudanças devem ser retrocompatíveis dentro da janela de convivência definida no contrato.
+   - Dependências entre tasks de sistemas diferentes são marcadas normalmente em "Depende de" — com o sufixo do sistema (ex: `TASK-2.1 [gateway]`).
+
+8. **Restrições de sprint/prioridade**: Se o sprint não foi especificado nos argumentos, pergunte ao usuário se há restrições. Se o sprint já está nos argumentos (ex: `"Sprint 1"`), pule esta pergunta.
 
 ---
 
@@ -122,6 +130,7 @@ Gere o documento seguindo exatamente este template:
 #### TASK-1.1 — [Título da Task]
 
 **Epic:** EPIC-1 | **US:** US-1
+**Sistema:** [nome — systems/nome/ | omitir em workspace de sistema único]
 **Labels:** `[backend]` `[infra]` `[frontend]` `[test]` `[migration]` *(use os aplicáveis)*
 **Estimativa:** [P = até 4h | M = 4–8h | G = 1–2 dias]
 **Depende de:** [TASK-X.Y, ou "nenhuma"]
@@ -210,6 +219,24 @@ TASK-1.1 (Setup BD)
 
 ---
 
+## Plano Git Multi-Sistema
+
+> **Somente em features que afetam 2+ sistemas.** Omitir em workspace de sistema único.
+
+**Branch da feature:** `feature/[nome]` em cada repositório afetado (ajuste conforme o `git-workflow.md` de cada sistema).
+
+**Ordem de merge entre repositórios:**
+
+| Ordem | Sistema | O que entrega | Pré-requisito | Compatibilidade |
+|-------|---------|---------------|---------------|-----------------|
+| 1 | [ex: api-auth] | [emite JWT v2 mantendo v1] | — | retrocompatível (v1 continua aceito) |
+| 2 | [ex: gateway] | [valida v1 e v2] | ordem 1 em produção | retrocompatível |
+| 3 | [ex: frontend] | [consome v2] | ordem 2 em produção | — |
+
+**Janela de convivência:** [conforme docs/contracts/[nome]-contract.md — ex: v1 aceito por 30 dias após corte]
+
+---
+
 ## Backlog Priorizado (Ordem de Execução)
 
 | Prioridade | Task | Estimativa | Label | Depende de | `[P]` |
@@ -262,6 +289,7 @@ docs/tasks/
 
 **Feature:** [Nome da Feature]
 **Documento principal:** [docs/tasks/nome-tasks.md]
+**Sistema:** [nome — systems/nome/ | omitir em workspace de sistema único]
 **Epic:** EPIC-[N] — [Nome] | **US:** US-[N] — [Título]
 **Labels:** `[labels aplicáveis]`
 **Estimativa:** [P / M / G]
@@ -427,3 +455,4 @@ Antes de finalizar, verifique:
 - [ ] Tasks de infraestrutura e setup precedem as de implementação
 - [ ] Tasks paralelizáveis `[P]` foram identificadas e documentadas com suas condições
 - [ ] A seção "Oportunidades de Paralelismo" está preenchida (ou explicitamente omitida por ausência de paralelismo)
+- [ ] Multi-sistema: cada task pertence a um único sistema; o Plano Git define ordem de merge retrocompatível entre repositórios

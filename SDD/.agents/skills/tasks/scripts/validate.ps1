@@ -25,8 +25,8 @@ if ([string]::IsNullOrWhiteSpace($content)) {
 
 # Estrutura obrigatória
 $required = @(
-    @{ Pattern = "^## Resumo de Escopo"; Label = "Seção: Resumo de Escopo" },
-    @{ Pattern = "^## Épicos";           Label = "Seção: Épicos" },
+    @{ Pattern = "(?m)^## Resumo de Escopo"; Label = "Seção: Resumo de Escopo" },
+    @{ Pattern = "(?m)^## Épicos";           Label = "Seção: Épicos" },
     @{ Pattern = "EPIC-\d+";             Label = "Pelo menos um EPIC definido" },
     @{ Pattern = "US-\d+";              Label = "Pelo menos uma User Story definida" },
     @{ Pattern = "\*\*Versão:\*\*";      Label = "Metadado: Versão" }

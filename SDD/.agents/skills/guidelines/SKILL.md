@@ -3,15 +3,54 @@ name: guidelines
 description: Creates and maintains project engineering guideline files covering stack, architecture, coding standards, testing, security, API conventions, observability, and git workflow. Use to set up or update the project standards that all other SDD skills reference.
 ---
 
-# /guidelines — Criação e Manutenção de Guidelines do Projeto
+# /guidelines — Criação e Manutenção de Guidelines dos Sistemas
 
-Você é um **Tech Lead / Arquiteto sênior** especializado em documentação de padrões de engenharia. Sua missão é criar ou atualizar os arquivos de `guidelines/` — a fundação do processo SDD, lida por todos os skills (`/prd`, `/techspec`, `/tasks`, `/implement`, `/code_review`).
+Você é um **Tech Lead / Arquiteto sênior** especializado em documentação de padrões de engenharia. Sua missão é criar ou atualizar os guidelines de cada sistema do workspace — a fundação do processo SDD, lida por todos os skills (`/prd`, `/techspec`, `/tasks`, `/implement`, `/code_review`).
+
+**Localização:** os guidelines vivem **dentro de cada sistema**, em `systems/[sistema]/guidelines/` — cada sistema tem stack, padrões e cenário próprios. Se o workspace ainda usa o layout antigo (código e `guidelines/` na raiz, sem `systems/`), oriente o usuário a rodar `pwsh scripts/update.ps1 -Workspace .` antes de prosseguir.
 
 ## Argumentos recebidos
 
 Formatos aceitos:
-- (sem argumento) — conduza o processo completo de criação/revisão de guidelines
-- `coding-standards` (nome de arquivo) — foque apenas no arquivo informado
+- (sem argumento) — descobre os sistemas do workspace (FASE 0) e conduz o processo para os pendentes
+- `[sistema]` (ex: `api-auth`) — foca no sistema informado
+- `[sistema] coding-standards` — foca em um arquivo específico de um sistema
+
+---
+
+## FASE 0 — Descoberta de Sistemas
+
+Execute antes de tudo:
+
+1. **Leia `memory/state.md`** — tabela **Sistemas** (nome, caminho, cenário, status dos guidelines). Se a tabela não existir, monte-a listando os diretórios de `systems/` e perguntando o cenário de cada um (ver FASE 1, pergunta A2).
+
+2. **Para cada sistema**, verifique `systems/[nome]/guidelines/`:
+   - **Completa** (arquivos padrão presentes e preenchidos) → marque `ok`; ofereça apenas revisão.
+   - **Ausente ou incompleta** → entra na fila de configuração.
+
+3. **Se houver mais de um sistema pendente** e nenhum argumento foi passado, pergunte de forma interativa:
+   ```
+   Pergunta: "Detectei N sistemas sem guidelines: [lista]. Como deseja prosseguir?"
+   Opções:
+   - Configurar todos em sequência (recomendado)
+   - Configurar apenas um (escolherei qual)
+   ```
+
+4. **Itere um sistema por vez** (FASES 1–5 completas por sistema, com o modo do cenário daquele sistema). Ao concluir cada um, atualize a coluna Guidelines do `state.md` para `ok`.
+
+5. **Defaults transversais**: respostas que tendem a valer para o workspace inteiro (git workflow, convenção de commits, compliance, perfil do time) devem ser perguntadas **uma única vez** — nos sistemas seguintes, apresente a resposta anterior como default: "O sistema [X] usa [valor]. Vale para [Y] também?"
+
+---
+
+## Modos de operação por cenário
+
+O **cenário do sistema** (da tabela Sistemas do `state.md`, ou pergunta A2) define o modo da entrevista:
+
+| Cenário | Fonte primária | Comportamento dos módulos B–I |
+|---------|---------------|-------------------------------|
+| **Greenfield** (novo, sem código) | Entrevista | Perguntas completas, prescritivas — define os padrões |
+| **Brownfield** (código existente adota SDD) | **Inventário do código** (FASE 1.2 expandida) | Módulos viram **confirmação**: "Detectei X — confirma?". Só pergunte o que não puder inferir. Divergência entre código real e desejado → registre como "estado atual vs. alvo" no guideline |
+| **Migração** (legado muda de tecnologia) | Inventário do legado (as-is) + entrevista do alvo (to-be) | Duas passadas: inventário automático do legado gera `legacy-context.md`; a entrevista prescritiva (como greenfield) define os guidelines do **alvo**. Inclui o bloco de Estratégia de Migração (ver Módulo M) |
 
 ---
 
@@ -28,11 +67,13 @@ Formatos aceitos:
 
 ---
 
-## FASE 1 — Diagnóstico (silencioso — sem perguntas ao usuário ainda)
+## FASE 1 — Diagnóstico do Sistema (silencioso — sem perguntas ao usuário ainda)
+
+> Todas as referências a `guidelines/` nesta fase e nas seguintes significam `systems/[sistema]/guidelines/` — o sistema em foco na iteração atual da FASE 0.
 
 ### 1.1 — Leitura dos arquivos existentes
 
-1. **Verifique se `guidelines/` existe**:
+1. **Verifique se `systems/[sistema]/guidelines/` existe**:
    - Não existe → anote que criará a estrutura completa.
    - Existe → leia **todos** os arquivos presentes (conteúdo completo).
 
@@ -48,10 +89,19 @@ Formatos aceitos:
 
 4. **Para cada arquivo padrão já existente**, registre o estado: atualizado / desatualizado / ausente.
 
-### 1.2 — Leitura do contexto do projeto
+### 1.2 — Inventário do código (obrigatório para Brownfield e Migração)
 
-5. Leia: arquivo de configuração do LLM (`CLAUDE.md`, `GEMINI.md` ou equivalente), `README.md`, `package.json`, `pyproject.toml` — infira stack e padrões já em uso.
-6. Se houver código-fonte, analise a estrutura de pastas para confirmar o padrão arquitetural em prática.
+> Em **Greenfield** (sem código): leia apenas `CLAUDE.md`/`README.md` do workspace, se existirem, e siga para 1.3.
+
+Para sistemas com código em `systems/[sistema]/`, monte o inventário **antes de perguntar qualquer coisa** — a resposta está no repositório:
+
+5. **Stack e dependências**: manifests (`package.json`, `pyproject.toml`, `pom.xml`, `go.mod`, `*.csproj`...) — linguagens, frameworks, versões exatas.
+6. **Estrutura**: árvore de pastas de `src/` (ou equivalente) — padrão arquitetural em prática, organização por camada/domínio.
+7. **Ferramentas**: configs presentes (`.eslintrc*`, `.prettierrc*`, `ruff.toml`, `jest.config*`, `vitest.config*`, `docker-compose*`, pipelines em `.github/workflows/`, `.gitlab-ci.yml`...) — lint, testes, CI.
+8. **Convenções git**: amostra do histórico (`git -C systems/[sistema] log --oneline -20`) — formato de commits e nomes de branches em uso.
+9. **Registre cada item como inferência com evidência** (ex: "Arquitetura: por camada — `src/controllers`, `src/services`, `src/repositories`"). Na FASE 2, esses itens são **confirmados**, não perguntados do zero.
+
+**Adicionalmente para Migração** — o inventário do legado alimenta o `legacy-context.md` (ver FASE 3): identifique também integrações externas (clients HTTP, filas, bancos), pontos de entrada (rotas, jobs, listeners), e débitos/riscos evidentes (dependências sem manutenção, versões EOL).
 
 ### 1.3 — Apresentação do diagnóstico
 
@@ -66,12 +116,16 @@ Apresente em texto:
 
 ## FASE 2 — Levantamento (Entrevista Interativa)
 
-Conduza por módulos de forma interativa. Para cada módulo:
+Conduza por módulos de forma interativa, **no modo do cenário do sistema**:
 - Se já **totalmente coberto** por arquivo extra ou padrão existente → **pule o módulo**, informe ao usuário o que foi aproveitado.
 - Se **parcialmente coberto** (gap) → faça apenas as perguntas não respondidas, apresentando o valor já conhecido como sugestão/default.
 - Se **ausente** → conduza o módulo completo.
 
-Onde o contexto foi inferido do código/config, confirme em vez de perguntar do zero.
+**Brownfield**: onde o inventário da FASE 1.2 inferiu a resposta, **confirme em bloco** em vez de perguntar do zero — apresente as inferências do módulo de uma vez ("Detectei: TypeScript 5.4, NestJS 10, PostgreSQL via Prisma — confirma?") e pergunte apenas os gaps. Se o usuário quiser um padrão **diferente** do que o código pratica, registre no guideline as duas colunas: *estado atual* e *alvo* (com nota de transição).
+
+**Migração**: a entrevista define os padrões do **sistema alvo** (to-be) — conduza como greenfield, usando o inventário do legado apenas como referência do que existe hoje. Ao final, conduza também o **Módulo M**.
+
+**Defaults transversais** (FASE 0, item 5): git workflow, commits, compliance e perfil do time perguntados uma vez valem como default para os demais sistemas.
 
 ---
 
@@ -92,17 +146,17 @@ Opções:
 - Outro (descreva)
 ```
 
-**A2** — Estágio do projeto
+**A2** — Cenário do sistema — **pule se já consta na tabela Sistemas do `state.md`** (gravado pelo `init.ps1`)
 ```
-Pergunta interativa | header: "Estágio" | multiSelect: false
-Pergunta: "Qual é o estágio atual do projeto?"
+Pergunta interativa | header: "Cenário" | multiSelect: false
+Pergunta: "Qual é o cenário deste sistema?"
 Opções:
-- Greenfield (projeto novo, sem código ainda)
-- Em desenvolvimento (código inicial existe)
-- Em produção (já tem usuários)
-- Migração de sistema legado
+- Novo (greenfield — sem código ainda)
+- Existente (código em uso, adotando o SDD agora)
+- Legado em migração de tecnologia
 - Outro (descreva)
 ```
+> A resposta define o **modo de operação** (ver tabela no início) e deve ser gravada na tabela Sistemas do `state.md`.
 
 **A3** — Tamanho e senioridade do time
 ```
@@ -716,7 +770,55 @@ Opções:
 
 ---
 
+### Módulo M — Estratégia de Migração
+> **Somente para cenário Migração.** As respostas geram o ADR inicial em `memory/constitution.md` e a seção de estratégia do `legacy-context.md`.
+
+**M1** — Abordagem de migração
+```
+Pergunta interativa | header: "Estratégia" | multiSelect: false
+Pergunta: "Qual abordagem de migração será adotada?"
+Opções:
+- Strangler Fig (substituição incremental, legado e novo convivem por rota/módulo)
+- Big Bang (corte único — novo substitui o legado de uma vez)
+- Convivência paralela (dual-run com comparação de resultados antes do corte)
+- Ainda não decidido (quero recomendação com trade-offs)
+```
+
+**M2** — Paridade de comportamento
+```
+Pergunta interativa | header: "Paridade" | multiSelect: false
+Pergunta: "Qual o nível de paridade exigido com o sistema legado?"
+Opções:
+- Paridade total (comportamento idêntico, incluindo bugs conhecidos se houver dependência)
+- Paridade funcional (mesmos resultados, comportamento interno pode mudar)
+- Paridade parcial (lista de funcionalidades que serão descontinuadas — descreverei)
+- A definir por funcionalidade no PRD
+```
+
+**M3** — Dados
+```
+Pergunta interativa | header: "Dados" | multiSelect: false
+Pergunta: "Como os dados do legado serão tratados?"
+Opções:
+- Migração completa (ETL/carga para o novo modelo)
+- Migração incremental (sincronização durante a convivência)
+- Novo sistema começa vazio (legado vira somente leitura/arquivo)
+- Sem dados a migrar
+- Outro (descreva)
+```
+
+**M4** — Critério de corte (texto livre)
+```
+Pergunta interativa | header: "Corte"
+Pergunta: "Qual é o critério para desligar o legado? (ex: 100% do tráfego no novo por 30 dias sem incidente)"
+→ Texto livre (aceite "a definir")
+```
+
+---
+
 ## FASE 3 — Geração dos Arquivos
+
+**Destino**: `systems/[sistema]/guidelines/`.
 
 **Regra geral**: gere apenas os arquivos com informação suficiente. Onde houver lacunas, inclua `<!-- TODO: preencher -->` com instrução clara do que adicionar.
 
@@ -1157,6 +1259,47 @@ Template:
 
 ---
 
+### `guidelines/legacy-context.md` — **somente cenário Migração**
+
+Gere a partir do inventário do legado (FASE 1.2) e do Módulo M. Este arquivo é lido pelo `/prd` (paridade de comportamento) e pelo `/techspec` (estratégia de migração):
+
+```markdown
+# Contexto do Legado — [Nome do Sistema]
+
+> Sistema em migração. Guidelines desta pasta descrevem o **alvo (to-be)**; este arquivo descreve o **legado (as-is)**.
+> Lido por: /prd (Módulo D — paridade), /techspec (Estratégia de Migração).
+
+## Stack Legada
+| Camada | Tecnologia | Versão | Estado (EOL? mantida?) |
+|--------|-----------|--------|------------------------|
+
+## Pontos de Entrada
+[Rotas/endpoints, jobs agendados, listeners de fila — o que o mundo externo aciona no legado]
+
+## Integrações Externas
+| Sistema | Tipo | Direção | Criticidade |
+|---------|------|---------|-------------|
+
+## Comportamentos a Preservar
+[Regras de negócio implícitas no código que DEVEM sobreviver à migração — inclua bugs dos quais consumidores dependem, se houver]
+
+## Dados
+[Modelo atual resumido, volumes, e a decisão do M3: migração completa/incremental/sem dados]
+
+## Débitos e Riscos Conhecidos
+[Dependências EOL, áreas sem teste, código sem dono]
+
+## Estratégia de Migração (decisões do Módulo M)
+- **Abordagem:** [M1]
+- **Paridade:** [M2]
+- **Dados:** [M3]
+- **Critério de corte:** [M4]
+```
+
+Registre também a decisão M1–M4 como **ADR inicial** em `memory/constitution.md` (seção "Decisões de Arquitetura"): `ADR-000: Estratégia de migração de [sistema] — [abordagem], [paridade], corte: [critério]`.
+
+---
+
 ## Mínimo Viável por Skill
 
 Antes de salvar, verifique se os arquivos gerados atendem ao mínimo necessário para cada skill downstream:
@@ -1202,9 +1345,10 @@ Antes de salvar definitivamente os arquivos, submeta-os a uma revisão para gara
 
 ## FASE 5 — Salvamento e Próximos Passos
 
-1. Crie a pasta `guidelines/` se não existir.
+1. Crie a pasta `systems/[sistema]/guidelines/` se não existir.
 2. Salve cada arquivo gerado.
-3. Crie ou atualize `memory/constitution.md` com um resumo estruturado do projeto, baseado nas respostas coletadas e nos arquivos gerados/lidos:
+3. **Atualize a tabela Sistemas em `memory/state.md`**: coluna Guidelines → `ok` para o sistema concluído. Se restarem sistemas pendentes na fila da FASE 0, **retorne à FASE 1 para o próximo sistema** antes de seguir.
+4. Crie ou atualize `memory/constitution.md` com um resumo estruturado **por sistema**, baseado nas respostas coletadas e nos arquivos gerados/lidos (em migração, inclua o ADR-000 da estratégia):
 
    ```markdown
    # Resumo do Projeto
@@ -1242,10 +1386,11 @@ Antes de salvar definitivamente os arquivos, submeta-os a uma revisão para gara
    - Arquivos customizados aproveitados: [lista dos extras mapeados]
    ```
 
-4. Informe ao usuário:
-   - Arquivos criados/atualizados
+5. Informe ao usuário (após concluir **todos** os sistemas da fila):
+   - Sistemas configurados e arquivos criados/atualizados em cada `systems/[sistema]/guidelines/`
    - Arquivos extras aproveitados e como foram referenciados
    - Seções com `<!-- TODO -->` que precisam de complemento
+   - Que **o contexto pode ser limpo com segurança** (`/clear`) — a tabela Sistemas do `state.md` e os arquivos em disco carregam tudo
    - **Próximo passo:** Execute `/prd` para iniciar o levantamento de requisitos com os guidelines configurados.
 
 ---
@@ -1258,3 +1403,6 @@ Antes de salvar definitivamente os arquivos, submeta-os a uma revisão para gara
 - [ ] Regras são inequívocas — sem margem para interpretações conflitantes
 - [ ] O que NÃO fazer está tão claro quanto o que FAZER
 - [ ] `README.md` da pasta está atualizado com todos os arquivos presentes
+- [ ] Em brownfield: inferências do inventário foram confirmadas, não re-perguntadas; divergências registradas como "atual vs. alvo"
+- [ ] Em migração: `legacy-context.md` gerado e ADR-000 registrado em `memory/constitution.md`
+- [ ] Tabela Sistemas do `memory/state.md` atualizada (cenário + guidelines `ok`)
