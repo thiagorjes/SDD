@@ -12,6 +12,10 @@ from pathlib import Path
 
 VALID_CANVAS_DIMS = {"R", "E", "A", "S", "O", "N"}
 
+VALID_DR_STATUS = {"accepted", "superseded", "deprecated"}
+REQUIRED_DR_FRONTMATTER = ["id", "type", "status", "date"]
+REQUIRED_DR_SECTIONS = ["## Decisão", "## Motivação", "## Consequências", "## Alternativas Consideradas"]
+
 REQUIRED_FRONTMATTER = [
     "name",
     "description",
@@ -89,6 +93,39 @@ def validate_skill(skill_md: Path) -> list[str]:
     return errors
 
 
+def validate_dr(dr_md: Path) -> list[str]:
+    """Valida um Decision Record: não é SKILL.md, mas tem schema próprio (frontmatter + 4 seções)."""
+    dr_name = dr_md.name
+    errors = []
+
+    try:
+        content = dr_md.read_text(encoding="utf-8")
+    except Exception as e:
+        return [f"ERRO: [{dr_name}] Não foi possível ler: {e}"]
+
+    if not FRONTMATTER_RE.match(content):
+        errors.append(f"ERRO: [{dr_name}] Frontmatter YAML ausente ou malformado")
+        return errors
+
+    fm = parse_frontmatter(content)
+
+    for field in REQUIRED_DR_FRONTMATTER:
+        if field not in fm:
+            errors.append(f"ERRO: [{dr_name}] Frontmatter faltando campo '{field}'")
+
+    status = fm.get("status")
+    if status is not None and status not in VALID_DR_STATUS:
+        errors.append(f"ERRO: [{dr_name}] status inválido: {status}")
+
+    headings = set(HEADER_RE.findall(content))
+    for section in REQUIRED_DR_SECTIONS:
+        bare = re.sub(r'^#+\s*', '', section).strip()
+        if not any(bare == h.strip() for h in headings):
+            errors.append(f"ERRO: [{dr_name}] Seção obrigatória ausente: \"{section}\"")
+
+    return errors
+
+
 def validate_dr_index(constitution_path: Path, decisions_dir: Path) -> list[str]:
     """Verifica que DRs referenciados no índice existem em docs/decisions/."""
     warnings = []
@@ -129,9 +166,14 @@ def main():
         errors = validate_skill(skill_md)
         all_errors.extend(errors)
 
-    # Opcional: verificar integridade do índice de DRs
+    # Validar Decision Records (tipo especial: não é SKILL.md, mas tem schema próprio)
     constitution = skills_dir.parent.parent / "memory" / "constitution.md"
     decisions = skills_dir.parent.parent / "docs" / "decisions"
+    if decisions.exists():
+        for dr_md in sorted(decisions.glob("*.md")):
+            all_errors.extend(validate_dr(dr_md))
+
+    # Opcional: verificar integridade do índice de DRs
     all_errors.extend(validate_dr_index(constitution, decisions))
 
     for msg in all_errors:
