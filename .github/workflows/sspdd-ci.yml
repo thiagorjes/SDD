@@ -1,10 +1,16 @@
-name: CI
+name: SSPDD CI
 
 on:
   push:
     branches: [main, develop]
+    paths: ["SSPDD/**"]
   pull_request:
     branches: [main, develop]
+    paths: ["SSPDD/**"]
+
+defaults:
+  run:
+    working-directory: SSPDD
 
 jobs:
   lint-python:
