@@ -159,6 +159,8 @@ Esta skill atualiza **4 dimensões** do REASONS Canvas:
 **S — Structure:** componentes, camadas, dependências externas
 **N — Norms:** padrões dos guidelines mais relevantes para esta feature
 
+Ao atualizar cada dimensão, adicionar referências às DRs (ADR/SDR/DDR) criadas na mesma fase na linha `> Decisões:` (ex: `> Decisões: ADR-002, SDR-001` ou `> Decisões: —` se nenhuma).
+
 Após atualizar E, A, S, N: verificar se todas as 7 dimensões estão preenchidas.
 - Se R e O ainda estiverem vazias: canvas permanece `DRAFT`
 - Se apenas O estiver vazia: canvas permanece `DRAFT` (aguarda /tasks)

@@ -78,6 +78,7 @@ python .agents/scripts/validate.py --mode output \
 
 Atualiza a dimensão:
 - **R — Reasons:** quando a clarificação envolve o motivo de negócio ou objetivo original do RF, ajustar a dimensão R do canvas (se já existir) refletindo o motivo esclarecido, marcando `_Atualizado por: /clarify v1.0 — [data]_`
+- Se a clarificação originar uma nova BDR, adicionar sua referência na linha `> Decisões:` da dimensão R
 
 Se o canvas ainda não existir para a feature, pular esta etapa — ele será gerado por `/spdd-canvas` ou `/techspec` posteriormente já com o PRD clarificado.
 

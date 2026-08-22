@@ -125,6 +125,7 @@ Esta skill atualiza a dimensão **O** do REASONS Canvas:
 
 **O — Operations:**
 - Lista de tasks ordenada por dependência com IDs e descrições breves
+- Referências a DRs criadas nesta fase: `> Decisões: ADR-003, ...` (ou `> Decisões: —` se nenhuma)
 - Ownership: `_Atualizado por: /tasks v1.0 — [data]_`
 - Esta é a dimensão que pode fazer o canvas transitar de DRAFT → READY
 

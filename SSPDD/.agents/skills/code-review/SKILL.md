@@ -152,6 +152,7 @@ Esta skill atualiza a dimensão **S — Safeguards**:
 
 - Guardrails extraídos da revisão de segurança e qualidade
 - Padrões negativos ("o que NÃO fazer") identificados durante o review
+- Referências a SDRs/ADRs criadas nesta fase: `> Decisões: SDR-001, ...` (ou `> Decisões: —` se nenhuma)
 - Ownership: `_Atualizado por: /code-review v1.0 — [data]_`
 
 **Transição para READY:** /code-review é tipicamente a última skill a preencher o canvas (S é a última dimensão). Quando S é preenchida e todas as outras 6 dimensões estão preenchidas, o canvas transita para `READY`.

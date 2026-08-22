@@ -100,11 +100,13 @@ Esta skill atualiza as dimensões **R** e **E** do REASONS Canvas:
 
 **R — Requirements:**
 - Preencher com: objetivos de negócio, critérios de sucesso, escopo IN e OUT
+- Referências a BDRs criadas nesta fase: `> Decisões: BDR-001, ...` (ou `> Decisões: —` se nenhuma)
 - Ownership: `_Atualizado por: /discovery v1.0 — [data]_`
 
 **E — Entities:**
 - Preencher com: personas identificadas, entidades de domínio rascunho
 - Nota: rascunho provisório — /prd e /techspec refinarão
+- Referências a DRs criadas nesta fase: `> Decisões: —` (tipicamente vazia nesta fase, refinada depois)
 - Ownership: `_Atualizado por: /discovery v1.0 — [data]_`
 
 **Regra:** canvas criado sempre com `_Status: DRAFT_` — nunca muda para READY nesta fase.

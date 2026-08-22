@@ -94,6 +94,7 @@ Salvar o canvas após a atualização.
 
 Esta skill atualiza:
 - **E — Entities:** entidades de UX/UI (componentes, tokens), complementando as entidades de domínio
+- Referências a DDRs criadas nesta fase: `> Decisões: DDR-001, ...` (ou `> Decisões: —` se nenhuma)
 
 ## Handoff
 
