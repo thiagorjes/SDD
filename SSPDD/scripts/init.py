@@ -131,19 +131,42 @@ def read_skills_info(source: Path) -> list[dict]:
     return skills
 
 
+def read_agents_info(source: Path) -> list[dict]:
+    agents = []
+    agents_dir = source / ".agents" / "agents"
+    if not agents_dir.exists():
+        return agents
+    import re
+    for agent_md in sorted(agents_dir.glob("*.md")):
+        content = agent_md.read_text(encoding="utf-8")
+        role_m = re.search(r'^##\s*Role\s*\n(.+)$', content, re.MULTILINE)
+        agents.append({
+            "name": agent_md.stem,
+            "role": role_m.group(1).strip() if role_m else "",
+        })
+    return agents
+
+
 def generate_agents_md(source: Path, dest: Path, project_name: str, today: str, lang: str):
     template = read_template(source, lang, "AGENTS.md-template")
     skills = read_skills_info(source)
+    agents = read_agents_info(source)
+
+    skills_block = "\n".join(
+        f"- **/{s['name']}** — {s['description']}" for s in skills
+    ) or "_(skills serão listadas após geração)_"
+    agents_block = "\n".join(
+        f"- **{a['name']}** — {a['role']}" for a in agents
+    ) or "_(agents serão listados após geração)_"
 
     if template:
         content = (template
                    .replace("{{PROJECT_NAME}}", project_name)
                    .replace("{{DATE}}", today)
-                   .replace("{{LANG}}", lang))
+                   .replace("{{LANG}}", lang)
+                   .replace("{{SKILLS_LIST}}", skills_block)
+                   .replace("{{AGENTS_LIST}}", agents_block))
     else:
-        skills_block = "\n".join(
-            f"- **/{s['name']}** — {s['description']}" for s in skills
-        ) or "_(skills serão listadas após geração)_"
         content = f"""# AGENTS.md — {project_name}
 
 ## Skills disponíveis

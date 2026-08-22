@@ -55,7 +55,10 @@ _Atualizado em: 2026-08-22_
 - **Etapa concluída:** TASK-08.1 — Agent definitions — 2026-08-22
 - **Arquivos:** .agents/agents/{architect,database,designer,devops,qa,security}.md; .agents/scripts/generate_platform.py (generate_claude agora gera .claude/agents/[nome].md referenciando .agents/agents/; fix de UnicodeEncodeError no print final)
 - **Testes:** geração manual em diretório temporário confirma 6 agents referenciados corretamente
-- **Próxima task:** TASK-08.2 (Templates AGENTS.md e CLAUDE.md)
+- **Etapa concluída:** TASK-08.2 — Templates AGENTS.md e CLAUDE.md — 2026-08-22
+- **Arquivos:** .agents/templates/AGENTS.md-template, .agents/templates/CLAUDE.md-template, scripts/init.py (read_agents_info + placeholders {{SKILLS_LIST}}/{{AGENTS_LIST}} aplicados também quando template existe, antes só no fallback)
+- **Testes:** init.py executado em diretório temporário (--platform claude) — AGENTS.md gerado lista 15 skills + 6 agents com description/role reais; CLAUDE.md referencia @AGENTS.md, @memory/constitution.md, @memory/state.md
+- **Próxima task:** TASK-08.3 (README.md do framework)
 
 ## Artifact Registry
 

@@ -1,0 +1,36 @@
+# AGENTS.md — {{PROJECT_NAME}}
+
+> Referência canônica de skills e agents disponíveis neste workspace SSPDD.
+> Gerado automaticamente por `init.py` em {{DATE}}. Não editar manualmente — reexecute `init.py`/`update.ps1` para regenerar.
+
+---
+
+## Pipeline SDD
+
+```
+/guidelines → /prd → [/clarify] → [/checklist] → /techspec → /spdd-canvas → /tasks → [/analyze] → /implement → [/spdd-sync] → /code-review
+```
+
+Skills entre colchetes `[/skill]` são opcionais mas recomendadas.
+
+---
+
+## Skills disponíveis
+
+{{SKILLS_LIST}}
+
+---
+
+## Agents disponíveis
+
+Agents são especialistas invocáveis para decisões pontuais durante o pipeline (não substituem as skills — as complementam).
+
+{{AGENTS_LIST}}
+
+---
+
+## Convenções
+
+- Toda skill tem `SKILL.md` canônico em `.agents/skills/[skill]/SKILL.md` e `validate-rules.json` para validação estrutural.
+- Todo agent tem definição em `.agents/agents/[agent].md` com Role, Especialidade, Quando Invocar e Outputs Esperados.
+- `memory/constitution.md` — princípios estáveis e ADRs. `memory/state.md` — estado operacional.
