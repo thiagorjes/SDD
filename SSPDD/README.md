@@ -1,6 +1,6 @@
 # SSPDD — Spec + Prompt Driven Development
 
-[![CI](https://github.com/thiagorjes/SDD/actions/workflows/sspdd-ci.yml/badge.svg)](https://github.com/thiagorjes/SDD/actions/workflows/sspdd-ci.yml)
+[![CI](https://github.com/thiagorjes/SDD/actions/workflows/ci.yml/badge.svg)](https://github.com/thiagorjes/SDD/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Plataformas](https://img.shields.io/badge/plataformas-linux%20%7C%20macos%20%7C%20windows-lightgrey)
 ![Licença](https://img.shields.io/badge/licença-MIT-green)

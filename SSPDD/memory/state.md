@@ -83,8 +83,8 @@ _Atualizado em: 2026-08-22_
 - **Etapa concluída:** TASK-10.4 — GitHub Actions CI workflow — 2026-08-22
 - **Arquivos:** .github/workflows/ci.yml (jobs lint-python, test-scripts, validate-skills, test-init; matrix 3 SOs × 3 versões Python), README.md (+badge CI), fix de lint (validate.py: variável ambígua `l`→`line`) e formatação ruff em 7 arquivos Python
 - **Testes:** `ruff check` e `ruff format --check` sem erros; `pytest .agents/scripts/tests/ scripts/tests/ -v` — 56/56 passando
-- **Code review:** EPIC-10 (TASK-10.1..10.4) — APROVADO COM RESSALVAS — 2026-08-22
-- **Findings:** 1 crítico (workflow `.github/workflows/ci.yml` fora do root do monorepo — corrigido na própria revisão, movido para `meuSDD/.github/workflows/sspdd-ci.yml`), 0 importantes, 0 sugestões
+- **Code review:** EPIC-10 (TASK-10.1..10.4) — APROVADO — 2026-08-22
+- **Findings:** 0 críticos, 0 importantes, 0 sugestões. `.github/workflows/ci.yml` permanece em `SSPDD/` (correto — `meuSDD/` é apenas workspace local de dev; `SSPDD/` é o root do repo quando adotado por um usuário). Um finding crítico levantado nesta revisão (mover CI para `meuSDD/`) foi revertido por estar baseado em premissa equivocada sobre a estrutura de repositório.
 - **Artefato:** docs/checklists/sspdd-framework-epic10-review.md
 - **Observação:** canvas `docs/spdd/sspdd-framework-canvas.md` inexistente — `/spdd-canvas` nunca foi executado nesta feature; dimensão S não pôde ser atualizada
 - **Próxima task:** Todas as tasks do backlog concluídas — aguardando orientação do usuário (ex: nova feature ou executar /spdd-canvas retroativo)

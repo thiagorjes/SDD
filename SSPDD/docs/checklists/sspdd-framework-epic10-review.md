@@ -14,9 +14,9 @@ Nenhum finding relevante. As mudanças no diff das tasks 10.1–10.4 são majori
 
 ## Conformidade com TechSpec
 
-**[CRÍTICO]: `.github/workflows/ci.yml` (localização original) — workflow fora do root do repositório Git**
-O repositório Git real tem root em `meuSDD/` (monorepo com `SDD/` e `SSPDD/`); o workflow criado em `SSPDD/.github/workflows/ci.yml` nunca seria descoberto pelo GitHub Actions, que exige `.github/workflows/` no root do repositório.
-Recomendação: aplicada durante esta revisão — movido para `meuSDD/.github/workflows/sspdd-ci.yml`, com `defaults.run.working-directory: SSPDD` e gatilho `paths: ["SSPDD/**"]` para não disparar em mudanças do sistema `SDD/` irmão. Badge do README atualizado para o novo nome do arquivo.
+Nenhum finding. `SSPDD/.github/workflows/ci.yml` está corretamente posicionado: `meuSDD/` é apenas o workspace local de desenvolvimento paralelo de `SDD/` e `SSPDD/`, não o repositório de destino de um adotante do framework — quando `SSPDD/` é adotado (via `git clone` + `init.py`), ele passa a ser o root do repositório próprio do usuário, onde `.github/workflows/ci.yml` é descoberto normalmente pelo GitHub Actions.
+
+_Correção durante esta revisão: uma primeira análise moveu o arquivo para `meuSDD/.github/workflows/`, partindo da premissa incorreta de que `meuSDD` era o repositório de entrega. Revertido a pedido do usuário — o arquivo permanece em `SSPDD/.github/workflows/ci.yml`, sem `working-directory` nem filtro de `paths`._
 
 ## Observabilidade
 
@@ -24,4 +24,4 @@ Não aplicável a este conjunto de tasks (testes e configuração de CI não int
 
 ## Resultado
 
-**APROVADO COM RESSALVAS** — finding crítico de CI corrigido durante a própria revisão; nenhuma ação adicional pendente antes do merge.
+**APROVADO** — nenhum finding pendente antes do merge.
