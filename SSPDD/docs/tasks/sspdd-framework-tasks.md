@@ -725,11 +725,11 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RF-003, RNF-002 | **Dependências:** EPIC-02, 03, 06
 
 **O que deve ser feito:**
-- [ ] Configurar pytest em `.agents/scripts/tests/`
-- [ ] Testes unitários: parsing de Artifact Registry, detecção de stale, id_patterns, gherkin detection, placeholder detection
-- [ ] Testes de integração: validate engine com fixtures de cada skill (valid + invalid)
-- [ ] Benchmark: verificar que p95 < 5s para arquivo de 500 linhas
-- [ ] Testar custom_steps: mock de subprocess para simular script custom
+- [x] Configurar pytest em `.agents/scripts/tests/`
+- [x] Testes unitários: parsing de Artifact Registry, detecção de stale, id_patterns, gherkin detection, placeholder detection
+- [x] Testes de integração: validate engine com fixtures de cada skill (valid + invalid)
+- [x] Benchmark: verificar que p95 < 5s para arquivo de 500 linhas
+- [x] Testar custom_steps: mock de subprocess para simular script custom
 
 **Critérios de aceite:**
 - `pytest .agents/scripts/tests/ -v` → 100% dos testes passam

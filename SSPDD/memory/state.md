@@ -67,7 +67,10 @@ _Atualizado em: 2026-08-22_
 - **Arquivos:** scripts/init.py (check_rtk/init_rtk/--skip-rtk já existiam; corrigido UnicodeEncodeError no print final em console cp1252 — trocado ✓/⚠ por OK-/AVISO-)
 - **Testes:** init.py executado em diretório temporário com e sem --skip-rtk — ambos exit 0, workspace completo gerado
 - **EPIC-09 concluído** (TASK-09.1)
-- **Próxima task:** TASK-10.1 (suite de testes validate.py engine)
+- **Etapa concluída:** TASK-10.1 — Suite de testes do validate.py engine — 2026-08-22
+- **Arquivos:** .agents/scripts/tests/test_validate.py (31 testes); fix em .agents/scripts/validate.py — `load_rules` não substitui mais `{{INPUT_ARTIFACT}}` no JSON bruto (bug real: paths Windows com `\` quebravam o parse JSON de techspec e spdd-canvas validate-rules.json; substituição correta já ocorria em `run_custom_steps`)
+- **Testes:** `pytest .agents/scripts/tests/ -v` — 31/31 passando (unitários: registry/stale, id_patterns, gherkin, placeholders, custom_steps mockado; integração: 8 skills × valid/invalid fixture; benchmark: p95 < 5s para 500 linhas)
+- **Próxima task:** TASK-10.2 (suite de testes init.py)
 
 ## Artifact Registry
 

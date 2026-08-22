@@ -24,7 +24,11 @@ def load_rules(rules_path: Path, system: str, feature: str, artifact: str) -> di
         print(f"ERRO: rules '{rules_path}' não encontrado.", file=sys.stderr)
         sys.exit(2)
     raw = rules_path.read_text(encoding="utf-8")
-    raw = raw.replace("{{SYSTEM}}", system).replace("{{FEATURE}}", feature).replace("{{INPUT_ARTIFACT}}", artifact)
+    # {{INPUT_ARTIFACT}} não é substituído aqui: o valor pode conter caracteres
+    # especiais de JSON (ex.: barras invertidas em paths Windows) e quebraria o
+    # parse. A substituição correta ocorre em run_custom_steps, já com o JSON
+    # parseado, apenas dentro de listas de argumentos.
+    raw = raw.replace("{{SYSTEM}}", system).replace("{{FEATURE}}", feature)
     try:
         return json.loads(raw)
     except json.JSONDecodeError as e:
