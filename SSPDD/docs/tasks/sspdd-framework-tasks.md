@@ -496,10 +496,10 @@ Skill que gera o REASONS Canvas completo a partir do PRD + TechSpec (para featur
 Skill que detecta divergências entre o REASONS Canvas e o código implementado. Oferece resolução bidirecional. Registra todo desvio em `docs/spdd/[feature]-deviations.md`.
 
 **O que deve ser feito:**
-- [ ] Definir frontmatter: `canvas-dimensions: []`, input: canvas + diff de código
-- [ ] Workflow: ler canvas → ler diff → para cada dimensão afetada, identificar divergência → apresentar ao usuário → aguardar decisão → aplicar resolução → registrar em deviations.md
-- [ ] Detecção por dimensão: E (nova entidade), S (nova dependência), O (task implementada diferente), S-safeguards (violação)
-- [ ] Formato de deviations: DEV-NNN com campos do schema (data-model.md seção 6)
+- [x] Definir frontmatter: `canvas-dimensions: []`, input: canvas + diff de código
+- [x] Workflow: ler canvas → ler diff → para cada dimensão afetada, identificar divergência → apresentar ao usuário → aguardar decisão → aplicar resolução → registrar em deviations.md
+- [x] Detecção por dimensão: E (nova entidade), S (nova dependência), O (task implementada diferente), S-safeguards (violação)
+- [x] Formato de deviations: DEV-NNN com campos do schema (data-model.md seção 6)
 
 **Critérios de aceite:**
 - SKILL.md passa `validate_skills.py`
