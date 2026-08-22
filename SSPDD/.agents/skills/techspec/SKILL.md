@@ -88,6 +88,13 @@ Para cada decisão técnica que envolva trade-off: criar ADR.
    - Seção 7 (Estratégia de Testes) → salvar
    - Seção 8 (Segurança e Observabilidade) → salvar
    - Seção 9 (Matriz de Rastreabilidade) — mapear cada RF do PRD → salvar
+     - Executar `check_rf_coverage.py` como verificação automatizada complementar (não substitui o mapeamento manual):
+       ```
+       python .agents/skills/techspec/scripts/check_rf_coverage.py \
+         --prd docs/prd/[feature]-prd.md \
+         --techspec docs/techspec/[feature]-techspec.md
+       ```
+       Se detectar RF sem cobertura: completar a matriz antes de prosseguir.
    - Seção 10 (Questões em Aberto) → salvar
 
 2.2. Se mock contracts criados: gerar task de substituição e documentar em Seção 6

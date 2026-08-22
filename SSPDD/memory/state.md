@@ -39,9 +39,9 @@ _Atualizado em: 2026-08-22_
 - **Artefatos:** docs/techspec/sspdd-framework-techspec.md + data-model.md + script-contracts/ + quickstart.md
 - **Etapa concluída:** /tasks (v1.0) — 2026-08-22
 - **Artefato:** docs/tasks/sspdd-framework-tasks.md
-- **Task implementada:** TASK-06.2 — SKILL.md /checklist com itens críticos e não-críticos por qualidade de requisito — 2026-08-22
-- **Arquivos:** .agents/skills/checklist/SKILL.md, .agents/skills/checklist/validate-rules.json
-- **Testes:** não aplicável (task de documentação)
+- **Task implementada:** TASK-06.4 — Scripts custom check_rf_coverage.py para /analyze e /techspec, com referência explícita no SKILL.md do /techspec — 2026-08-22
+- **Arquivos:** .agents/skills/techspec/SKILL.md
+- **Testes:** manual — RF-999 fictício não coberto → exit 1 confirmado em analyze/ e techspec/
 - **Próxima task:** TASK-06.3
 
 ## Artifact Registry
