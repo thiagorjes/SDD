@@ -454,10 +454,10 @@ Skill mais complexa do pipeline. Deve incluir: validação de guidelines por tip
 **Sistema:** SSPDD | **RF:** RF-011 | **Dependências:** EPIC-01, 02, 03
 
 **O que deve ser feito:**
-- [ ] Adicionar frontmatter: `canvas-dimensions: []`, input: task file + código implementado
-- [ ] Workflow: ler critérios de aceite da task → gerar suite de testes → executar → reportar cobertura
-- [ ] Gerar testes com base nos blocos Gherkin dos RFs da task
-- [ ] Suporte a TDD mode (gerar antes do código) e audit mode (gerar após código)
+- [x] Adicionar frontmatter: `canvas-dimensions: []`, input: task file + código implementado
+- [x] Workflow: ler critérios de aceite da task → gerar suite de testes → executar → reportar cobertura
+- [x] Gerar testes com base nos blocos Gherkin dos RFs da task
+- [x] Suporte a TDD mode (gerar antes do código) e audit mode (gerar após código)
 
 **Critérios de aceite:**
 - SKILL.md passa `validate_skills.py`
