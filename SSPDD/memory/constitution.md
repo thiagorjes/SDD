@@ -78,6 +78,11 @@ _Criado em: 2026-08-22_
 
 ---
 
+### ADR-013 — comportamento.md como template gerado por init.py
+- **Decisão:** `comportamento.md` passa a ser template versionado por idioma (`.agents/templates/[lang]/comportamento.md-template`), gerado na raiz de todo workspace por `init.py` e referenciado via `@comportamento.md` no `CLAUDE.md-template`.
+- **Motivação:** regras de interação (idioma, formato de output no chat, travas de segurança, economia de tokens) são genéricas e valiosas para qualquer workspace SSPDD, não só para o desenvolvimento do próprio framework.
+- **Consequência:** nova função `generate_comportamento_md` em `init.py`; todo workspace novo nasce com essas regras. Ver [docs/decisions/ADR-013-comportamento-md-template.md](../docs/decisions/ADR-013-comportamento-md-template.md).
+
 ## Principios Estaveis
 
 1. **Business-first:** PRD captura o quê e por quê; TechSpec decide o como. Nunca misturar.

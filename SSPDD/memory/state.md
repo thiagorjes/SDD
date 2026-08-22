@@ -73,6 +73,9 @@ _Atualizado em: 2026-08-22_
 - **Etapa concluída:** TASK-10.2 — Suite de testes do init.py — 2026-08-22
 - **Arquivos:** scripts/tests/test_init.py (15 testes)
 - **Testes:** `pytest scripts/tests/ -v` — 15/15 passando (estrutura de diretórios, AGENTS.md/CLAUDE.md/memory gerados, seleção de template por --lang pt_BR/en_US, RTK mockado ausente/presente/skip, subprocess de rtk init -g)
+- **Melhoria fora do plano de tasks:** comportamento.md incorporado ao framework como template gerado por init.py — 2026-08-22
+- **Arquivos:** .agents/templates/{pt_BR,en_US}/comportamento.md-template, .agents/templates/CLAUDE.md-template (+`@comportamento.md`), scripts/init.py (generate_comportamento_md), scripts/tests/test_init.py (+4 testes), docs/decisions/ADR-013-comportamento-md-template.md, memory/constitution.md (índice ADR)
+- **Testes:** 49/49 passando (pytest scripts/tests/ + .agents/scripts/tests/); validate_skills.py — 15 skills válidas
 - **Próxima task:** TASK-10.3 (validate_skills.py e CI check)
 
 ## Artifact Registry

@@ -1,5 +1,6 @@
 # CLAUDE.md — {{PROJECT_NAME}}
 
+@comportamento.md
 @AGENTS.md
 @memory/constitution.md
 @memory/state.md

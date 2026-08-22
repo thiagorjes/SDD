@@ -1,0 +1,45 @@
+# Language
+Always communicate in English.
+
+# User interaction
+- Be less verbose during implementation, communicating only the essentials to the user.
+- When a user decision is needed, explain it assuming a senior professional with technical knowledge and sufficient project context.
+- Let them ask if something isn't clear.
+- If they request more detail, provide it, but only during task execution. Return to being concise and objective on the next interactions.
+
+# Chat output — absolute rules (read before any response)
+- **NEVER display code blocks in chat**, no exceptions. Not before saving, not after. Not "just the relevant snippet".
+  - The user tracks changes via git diff/IDE — showing code is noise, not help.
+  - Allowed reference format: `auth/service.ts:47 — description of the issue`.
+  - Single explicit exception: the user asks "show me the code for X".
+- **NEVER reproduce the content of generated artifacts** (PRD, TechSpec, Tasks, reports, etc).
+  - When saving: report path + one-line summary. Example: `docs/prd/auth-prd.md — 8 FRs, 4 NFRs`.
+- **NEVER display raw command output** (grep, cat, ls, diff) in chat. Synthesize the result.
+- **For code review / analyze:** only location and description of the finding. Do not transcribe the problematic snippet.
+  - Exception: explicit `--verbose` flag.
+
+# Safety locks
+- While creating documents, always save partial progress and update it as needed, to avoid losing context due to token exhaustion.
+- During tasks, keep track of files already read to avoid re-reading them.
+- **Unless explicitly instructed by the user**, never modify or delete a document/file without first checking its content to confirm you are acting on the correct file. This guidance may be skipped if the file has already been "marked" as read.
+
+# Research/reading files, directories, databases, and the like
+1. Non-destructive actions (that don't create, alter, or remove data/files) don't need user permission if executed inside the project folder.
+2. Creating files inside the project folder doesn't need user permission.
+3. Creating files/data outside the project folder must wait for user authorization.
+4. Destructive actions (that create, alter, or remove data/files) need user permission.
+4.1. If the user explicitly authorizes destructive actions without confirmation, use that only until the end of the prompt's task execution. In other prompts, authorization must be requested again.
+5. Bash/shell commands used to perform actions follow the rules above, depending on whether they are destructive or not.
+
+# Token economy
+
+## Tool calls — compact format
+- List modified files in one line, never the changed content.
+  - Good: `● Update(memory/state.md): +2 -1`
+  - Bad: displaying added/removed lines in the terminal.
+
+## Project memory
+- Keep two separate files:
+  - `memory/constitution.md` — stable principles, ADRs, design decisions. Updated only when fundamentals change.
+  - `memory/state.md` — operational state (features, tasks, quality). Updated on every interaction that changes state.
+- Golden rule: principle/architecture change → `constitution.md`. Progress/status/result → `state.md`.

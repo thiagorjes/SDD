@@ -32,6 +32,7 @@ def _run_full_init(tmp_path, lang="pt_BR", platform="claude", skip_rtk=True):
 
     init.create_directory_structure(dest)
     init.copy_agents(source, dest, lang)
+    init.generate_comportamento_md(source, dest, "Teste", today, lang)
     init.generate_agents_md(source, dest, "Teste", today, lang)
     init.generate_claude_md(source, dest, "Teste", today, lang)
     init.generate_memory(source, dest, "Teste", today, lang)
@@ -62,6 +63,19 @@ def test_check_python_version_ok(capsys):
 # ---------------------------------------------------------------------------
 # AGENTS.md / CLAUDE.md / memory
 # ---------------------------------------------------------------------------
+
+@pytest.mark.parametrize("lang,expected", [("pt_BR", "português"), ("en_US", "English")])
+def test_generate_comportamento_md_usa_idioma_correto(tmp_path, lang, expected):
+    dest = _run_full_init(tmp_path, lang=lang)
+    content = (dest / "comportamento.md").read_text(encoding="utf-8")
+    assert expected in content
+
+
+def test_claude_md_referencia_comportamento(tmp_path):
+    dest = _run_full_init(tmp_path)
+    content = (dest / "CLAUDE.md").read_text(encoding="utf-8")
+    assert "@comportamento.md" in content
+
 
 def test_generate_agents_md_lista_skills_reais(tmp_path):
     dest = _run_full_init(tmp_path)

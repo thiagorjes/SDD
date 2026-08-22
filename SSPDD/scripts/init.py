@@ -200,6 +200,20 @@ def generate_claude_md(source: Path, dest: Path, project_name: str, today: str, 
     (dest / "CLAUDE.md").write_text(content, encoding="utf-8")
 
 
+def generate_comportamento_md(source: Path, dest: Path, project_name: str, today: str, lang: str):
+    template = read_template(source, lang, "comportamento.md-template")
+
+    if template:
+        content = (template
+                   .replace("{{PROJECT_NAME}}", project_name)
+                   .replace("{{DATE}}", today)
+                   .replace("{{LANG}}", lang))
+    else:
+        content = "# comportamento.md\n\n_(template não encontrado — preencher manualmente)_\n"
+
+    (dest / "comportamento.md").write_text(content, encoding="utf-8")
+
+
 def generate_memory(source: Path, dest: Path, project_name: str, today: str, lang: str):
     memory_dir = dest / "memory"
 
@@ -382,6 +396,7 @@ def main():
 
     create_directory_structure(dest)
     copy_agents(source, dest, lang)
+    generate_comportamento_md(source, dest, args.project, today, lang)
     generate_agents_md(source, dest, args.project, today, lang)
     generate_claude_md(source, dest, args.project, today, lang)
     generate_memory(source, dest, args.project, today, lang)
