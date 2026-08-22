@@ -58,7 +58,11 @@ _Atualizado em: 2026-08-22_
 - **Etapa concluída:** TASK-08.2 — Templates AGENTS.md e CLAUDE.md — 2026-08-22
 - **Arquivos:** .agents/templates/AGENTS.md-template, .agents/templates/CLAUDE.md-template, scripts/init.py (read_agents_info + placeholders {{SKILLS_LIST}}/{{AGENTS_LIST}} aplicados também quando template existe, antes só no fallback)
 - **Testes:** init.py executado em diretório temporário (--platform claude) — AGENTS.md gerado lista 15 skills + 6 agents com description/role reais; CLAUDE.md referencia @AGENTS.md, @memory/constitution.md, @memory/state.md
-- **Próxima task:** TASK-08.3 (README.md do framework)
+- **Etapa concluída:** TASK-08.3 — README.md do framework — 2026-08-22
+- **Arquivos:** README.md (reescrito: o que é, badges, pipeline com canvas progressivo em ASCII, quick start de 3 comandos, estrutura de diretórios, seção Decision Records com os 4 tipos)
+- **Testes:** quick start validado manualmente via `scripts/init.py` em diretório temporário (task 08.2) — fluxo completo funcional
+- **EPIC-08 concluído** (TASK-08.1, 08.2, 08.3)
+- **Próxima task:** TASK-09.1 (Integração RTK) ou TASK-10.x (CI) — aguardando definição do usuário
 
 ## Artifact Registry
 
