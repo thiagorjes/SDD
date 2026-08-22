@@ -39,10 +39,10 @@ _Atualizado em: 2026-08-22_
 - **Artefatos:** docs/techspec/sspdd-framework-techspec.md + data-model.md + script-contracts/ + quickstart.md
 - **Etapa concluída:** /tasks (v1.0) — 2026-08-22
 - **Artefato:** docs/tasks/sspdd-framework-tasks.md
-- **Task implementada:** TASK-05.2 — SKILL.md /spdd-sync com resolução bidirecional e registro em deviations.md — 2026-08-22
-- **Arquivos:** .agents/skills/spdd-sync/SKILL.md
-- **Testes:** não aplicável (task de documentação)
-- **Próxima task:** TASK-05.3
+- **Task implementada:** TASK-05.3 — SKILL.md /analyze com cobertura RF→Task, divergência canvas↔TechSpec e contradições — 2026-08-22
+- **Arquivos:** .agents/skills/analyze/SKILL.md, .agents/skills/analyze/validate-rules.json, .agents/skills/analyze/scripts/check_rf_coverage.py
+- **Testes:** check_rf_coverage.py verificado manualmente (RF-999 fictício → exit 1)
+- **Próxima task:** TASK-06.1
 
 ## Artifact Registry
 
