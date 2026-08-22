@@ -1,3 +1,4 @@
+SDD - devo revisar em algum momento, mas estou evoluindo o outro framework/pipeline
 TechSpec absorve guidelines (mudança de design) — o /techspec passa a citar explicitamente 
 os trechos de guidelines relevantes para a feature. O /tasks então remove a leitura de guidelines 
 completamente e referencia apenas seções do TechSpec. Cada task ficaria com: 
@@ -8,4 +9,8 @@ criar skills de migração de código, com foco na estratégia de migração, ma
 ajustes no techspec e code-review para ficar consistente com a estratégia de migração e sempre considerarem
 que há código legado de referencia. Criar testes específicos, comparando os resultados no legado e no novo.
 
+SSPDD - incorpora o que há de bom no SDD e que é exigido pelo SPDD (structured-prompt driven development)
+- vou dar mais atenção a esse framework/pipeline por enquanto, pois entrega mais valor para fluxos de trabalho maiores.
+- o SDD puro ou um "especificacao/planejamento/implementação" seguindo boas praticas da anthropic resolvem bem em tarefas mais simples, sem ficar muito verboso.
+- tanto SDD quanto SPDD, e o SSPDD que estou propondo, servem melhor para atividades mais abrangentes com varios sistemas e interfaces de contato entre eles.
 
