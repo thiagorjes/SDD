@@ -39,10 +39,10 @@ _Atualizado em: 2026-08-22_
 - **Artefatos:** docs/techspec/sspdd-framework-techspec.md + data-model.md + script-contracts/ + quickstart.md
 - **Etapa concluída:** /tasks (v1.0) — 2026-08-22
 - **Artefato:** docs/tasks/sspdd-framework-tasks.md
-- **Task implementada:** TASK-06.4 — Scripts custom check_rf_coverage.py para /analyze e /techspec, com referência explícita no SKILL.md do /techspec — 2026-08-22
-- **Arquivos:** .agents/skills/techspec/SKILL.md
-- **Testes:** manual — RF-999 fictício não coberto → exit 1 confirmado em analyze/ e techspec/
-- **Próxima task:** TASK-06.3
+- **Task implementada:** TASK-06.3 — SKILL.md /designer com entrevista de tokens/componentes/interação, DDRs e atualização da dimensão E do canvas — 2026-08-22
+- **Arquivos:** .agents/skills/designer/SKILL.md, .agents/skills/designer/validate-rules.json
+- **Testes:** validate_skills.py — 15 skills verificadas, todas válidas
+- **Próxima task:** TASK-06.6
 
 ## Artifact Registry
 
