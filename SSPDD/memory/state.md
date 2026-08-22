@@ -52,7 +52,10 @@ _Atualizado em: 2026-08-22_
 - **Arquivos:** SKILL.md de designer, techspec, code-review, tasks, discovery, clarify (instrução de referenciar DRs na linha `> Decisões:` de cada dimensão que atualizam). canvas-template já tinha a linha (TASK-03.3) e validate-rules.json/check_canvas_decisions.py do spdd-canvas já existiam (TASK-06.x) — critérios confirmados por teste.
 - **Testes:** valid_canvas.md → exit 0; invalid_canvas.md → exit 1 (seção ausente + ownership + linha `> Decisões:` ausente)
 - **EPIC-07 concluído** (TASK-07.1, 07.2, 07.3)
-- **Próxima task:** TASK-08.1 (EPIC-08 — Agents e Documentação do Framework)
+- **Etapa concluída:** TASK-08.1 — Agent definitions — 2026-08-22
+- **Arquivos:** .agents/agents/{architect,database,designer,devops,qa,security}.md; .agents/scripts/generate_platform.py (generate_claude agora gera .claude/agents/[nome].md referenciando .agents/agents/; fix de UnicodeEncodeError no print final)
+- **Testes:** geração manual em diretório temporário confirma 6 agents referenciados corretamente
+- **Próxima task:** TASK-08.2 (Templates AGENTS.md e CLAUDE.md)
 
 ## Artifact Registry
 

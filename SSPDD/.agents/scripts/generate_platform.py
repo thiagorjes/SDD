@@ -52,13 +52,32 @@ def discover_skills(source: Path) -> list[dict]:
     return skills
 
 
-def generate_claude(skills: list[dict], path: Path, source_rel: str):
+def discover_agents(source: Path) -> list[dict]:
+    agents = []
+    agents_dir = source / "agents"
+    if not agents_dir.exists():
+        return agents
+    for agent_file in sorted(agents_dir.glob("*.md")):
+        agents.append({"name": agent_file.stem})
+    return agents
+
+
+def generate_claude(skills: list[dict], path: Path, source_rel: str, source: Path):
     commands_dir = path / ".claude" / "commands"
     commands_dir.mkdir(parents=True, exist_ok=True)
     for skill in skills:
         cmd_file = commands_dir / f"{skill['dir']}.md"
         cmd_file.write_text(f"@{source_rel}/skills/{skill['dir']}/SKILL.md\n", encoding="utf-8")
     print(f"  claude: {len(skills)} commands em {commands_dir}")
+
+    agents = discover_agents(source)
+    if agents:
+        agents_dir = path / ".claude" / "agents"
+        agents_dir.mkdir(parents=True, exist_ok=True)
+        for agent in agents:
+            agent_file = agents_dir / f"{agent['name']}.md"
+            agent_file.write_text(f"@{source_rel}/agents/{agent['name']}.md\n", encoding="utf-8")
+        print(f"  claude: {len(agents)} agents em {agents_dir}")
 
 
 def generate_opencode(skills: list[dict], path: Path, source_rel: str):
@@ -123,7 +142,7 @@ def main():
 
     for plat in platforms:
         if plat == "claude":
-            generate_claude(skills, path, source_rel)
+            generate_claude(skills, path, source_rel, source)
         elif plat == "opencode":
             generate_opencode(skills, path, source_rel)
         elif plat == "cursor":
@@ -131,7 +150,7 @@ def main():
         elif plat == "copilot":
             generate_copilot(skills, path)
 
-    print(f"✓ Plataformas geradas: {', '.join(platforms)}")
+    print(f"OK - Plataformas geradas: {', '.join(platforms)}")
 
 
 if __name__ == "__main__":
