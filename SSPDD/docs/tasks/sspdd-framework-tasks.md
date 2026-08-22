@@ -771,13 +771,13 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RNF-001, RNF-003 | **Dependências:** EPIC-10 (TASK-10.1..03)
 
 **O que deve ser feito:**
-- [ ] Criar `.github/workflows/ci.yml` com jobs: lint-python, test-scripts, validate-skills, test-init
-- [ ] Configurar matrix de SOs: `ubuntu-latest`, `macos-latest`, `windows-latest`
-- [ ] Configurar matrix de Python: `3.10`, `3.11`, `3.12`
-- [ ] Job lint-python: `ruff check .agents/scripts/ scripts/` + `ruff format --check`
-- [ ] Job test-scripts: `pytest .agents/scripts/tests/ scripts/tests/ --tb=short`
-- [ ] Job validate-skills: `python .agents/scripts/validate_skills.py .agents/skills/`
-- [ ] Adicionar badge de CI no README.md
+- [x] Criar `.github/workflows/ci.yml` com jobs: lint-python, test-scripts, validate-skills, test-init
+- [x] Configurar matrix de SOs: `ubuntu-latest`, `macos-latest`, `windows-latest`
+- [x] Configurar matrix de Python: `3.10`, `3.11`, `3.12`
+- [x] Job lint-python: `ruff check .agents/scripts/ scripts/` + `ruff format --check`
+- [x] Job test-scripts: `pytest .agents/scripts/tests/ scripts/tests/ --tb=short`
+- [x] Job validate-skills: `python .agents/scripts/validate_skills.py .agents/skills/`
+- [x] Adicionar badge de CI no README.md
 
 **Critérios de aceite:**
 - CI passa em todos os 9 combinações (3 SOs × 3 Python versions) após EPIC-10 completo

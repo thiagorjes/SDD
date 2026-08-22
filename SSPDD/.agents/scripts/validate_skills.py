@@ -14,7 +14,12 @@ VALID_CANVAS_DIMS = {"R", "E", "A", "S", "O", "N"}
 
 VALID_DR_STATUS = {"accepted", "superseded", "deprecated"}
 REQUIRED_DR_FRONTMATTER = ["id", "type", "status", "date"]
-REQUIRED_DR_SECTIONS = ["## Decisão", "## Motivação", "## Consequências", "## Alternativas Consideradas"]
+REQUIRED_DR_SECTIONS = [
+    "## Decisão",
+    "## Motivação",
+    "## Consequências",
+    "## Alternativas Consideradas",
+]
 
 REQUIRED_FRONTMATTER = [
     "name",
@@ -33,9 +38,9 @@ REQUIRED_SECTIONS = [
     "## Handoff",
 ]
 
-FRONTMATTER_RE = re.compile(r'^---\n(.*?)\n---', re.DOTALL)
-CANVAS_DIMS_RE = re.compile(r'canvas-dimensions:\s*\[([^\]]*)\]')
-HEADER_RE = re.compile(r'^#{1,6}\s+(.+)$', re.MULTILINE)
+FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
+CANVAS_DIMS_RE = re.compile(r"canvas-dimensions:\s*\[([^\]]*)\]")
+HEADER_RE = re.compile(r"^#{1,6}\s+(.+)$", re.MULTILINE)
 
 
 def parse_frontmatter(content: str) -> dict:
@@ -44,8 +49,8 @@ def parse_frontmatter(content: str) -> dict:
         return {}
     fm: dict = {}
     for line in m.group(1).splitlines():
-        if ':' in line:
-            key, _, val = line.partition(':')
+        if ":" in line:
+            key, _, val = line.partition(":")
             fm[key.strip()] = val.strip()
     return fm
 
@@ -75,7 +80,7 @@ def validate_skill(skill_md: Path) -> list[str]:
     m = CANVAS_DIMS_RE.search(content)
     if m:
         raw_dims = m.group(1)
-        dims = [d.strip() for d in raw_dims.split(',') if d.strip()]
+        dims = [d.strip() for d in raw_dims.split(",") if d.strip()]
         for d in dims:
             if d not in VALID_CANVAS_DIMS:
                 errors.append(f"ERRO: [{skill_name}] canvas-dimensions inválido: {d}")
@@ -86,9 +91,11 @@ def validate_skill(skill_md: Path) -> list[str]:
     # Verificar 6 seções obrigatórias
     headings = set(HEADER_RE.findall(content))
     for section in REQUIRED_SECTIONS:
-        bare = re.sub(r'^#+\s*', '', section).strip()
+        bare = re.sub(r"^#+\s*", "", section).strip()
         if not any(bare == h.strip() for h in headings):
-            errors.append(f"ERRO: [{skill_name}] Seção obrigatória ausente: \"{section}\"")
+            errors.append(
+                f'ERRO: [{skill_name}] Seção obrigatória ausente: "{section}"'
+            )
 
     return errors
 
@@ -119,9 +126,9 @@ def validate_dr(dr_md: Path) -> list[str]:
 
     headings = set(HEADER_RE.findall(content))
     for section in REQUIRED_DR_SECTIONS:
-        bare = re.sub(r'^#+\s*', '', section).strip()
+        bare = re.sub(r"^#+\s*", "", section).strip()
         if not any(bare == h.strip() for h in headings):
-            errors.append(f"ERRO: [{dr_name}] Seção obrigatória ausente: \"{section}\"")
+            errors.append(f'ERRO: [{dr_name}] Seção obrigatória ausente: "{section}"')
 
     return errors
 
@@ -134,13 +141,15 @@ def validate_dr_index(constitution_path: Path, decisions_dir: Path) -> list[str]
 
     content = constitution_path.read_text(encoding="utf-8")
     # Find markdown links: [ADR-001](../docs/decisions/ADR-001-...)
-    link_re = re.compile(r'\[([A-Z]{2,3}-\d+)\]\(([^)]+)\)')
+    link_re = re.compile(r"\[([A-Z]{2,3}-\d+)\]\(([^)]+)\)")
     for m in link_re.finditer(content):
         dr_id, path_str = m.group(1), m.group(2)
         # Resolve relative to constitution.md parent
         ref = (constitution_path.parent / path_str).resolve()
         if not ref.exists():
-            warnings.append(f"AVISO: [{dr_id}] referenciado no índice mas arquivo não encontrado: {path_str}")
+            warnings.append(
+                f"AVISO: [{dr_id}] referenciado no índice mas arquivo não encontrado: {path_str}"
+            )
 
     return warnings
 
@@ -182,8 +191,10 @@ def main():
     if all_errors:
         error_count = sum(1 for e in all_errors if e.startswith("ERRO:"))
         warn_count = sum(1 for e in all_errors if e.startswith("AVISO:"))
-        print(f"\n{len(skill_mds)} skills verificadas — {error_count} erro(s), {warn_count} aviso(s).",
-              file=sys.stderr)
+        print(
+            f"\n{len(skill_mds)} skills verificadas — {error_count} erro(s), {warn_count} aviso(s).",
+            file=sys.stderr,
+        )
         if error_count > 0:
             sys.exit(1)
     else:

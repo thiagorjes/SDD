@@ -11,21 +11,21 @@ from pathlib import Path
 
 
 def parse_frontmatter(content: str) -> dict:
-    m = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
+    m = re.search(r"^---\n(.*?)\n---", content, re.DOTALL)
     if not m:
         return {}
     fm = {}
     for line in m.group(1).splitlines():
-        if ':' in line:
-            key, _, val = line.partition(':')
+        if ":" in line:
+            key, _, val = line.partition(":")
             fm[key.strip()] = val.strip()
     return fm
 
 
 def strip_frontmatter(content: str) -> str:
-    m = re.search(r'^---\n.*?\n---\n', content, re.DOTALL)
+    m = re.search(r"^---\n.*?\n---\n", content, re.DOTALL)
     if m:
-        return content[m.end():]
+        return content[m.end() :]
     return content
 
 
@@ -42,13 +42,15 @@ def discover_skills(source: Path) -> list[dict]:
             continue
         content = skill_md.read_text(encoding="utf-8")
         fm = parse_frontmatter(content)
-        skills.append({
-            "name": fm.get("name", skill_dir.name),
-            "description": fm.get("description", ""),
-            "dir": skill_dir.name,
-            "content": content,
-            "body": strip_frontmatter(content),
-        })
+        skills.append(
+            {
+                "name": fm.get("name", skill_dir.name),
+                "description": fm.get("description", ""),
+                "dir": skill_dir.name,
+                "content": content,
+                "body": strip_frontmatter(content),
+            }
+        )
     return skills
 
 
@@ -67,7 +69,9 @@ def generate_claude(skills: list[dict], path: Path, source_rel: str, source: Pat
     commands_dir.mkdir(parents=True, exist_ok=True)
     for skill in skills:
         cmd_file = commands_dir / f"{skill['dir']}.md"
-        cmd_file.write_text(f"@{source_rel}/skills/{skill['dir']}/SKILL.md\n", encoding="utf-8")
+        cmd_file.write_text(
+            f"@{source_rel}/skills/{skill['dir']}/SKILL.md\n", encoding="utf-8"
+        )
     print(f"  claude: {len(skills)} commands em {commands_dir}")
 
     agents = discover_agents(source)
@@ -76,7 +80,9 @@ def generate_claude(skills: list[dict], path: Path, source_rel: str, source: Pat
         agents_dir.mkdir(parents=True, exist_ok=True)
         for agent in agents:
             agent_file = agents_dir / f"{agent['name']}.md"
-            agent_file.write_text(f"@{source_rel}/agents/{agent['name']}.md\n", encoding="utf-8")
+            agent_file.write_text(
+                f"@{source_rel}/agents/{agent['name']}.md\n", encoding="utf-8"
+            )
         print(f"  claude: {len(agents)} agents em {agents_dir}")
 
 
@@ -85,7 +91,9 @@ def generate_opencode(skills: list[dict], path: Path, source_rel: str):
     commands_dir.mkdir(parents=True, exist_ok=True)
     for skill in skills:
         cmd_file = commands_dir / f"{skill['dir']}.md"
-        cmd_file.write_text(f"@{source_rel}/skills/{skill['dir']}/SKILL.md\n", encoding="utf-8")
+        cmd_file.write_text(
+            f"@{source_rel}/skills/{skill['dir']}/SKILL.md\n", encoding="utf-8"
+        )
     print(f"  opencode: {len(skills)} commands em {commands_dir}")
 
 
@@ -113,11 +121,18 @@ def generate_copilot(skills: list[dict], path: Path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Gera arquivos de plataforma para workspace SSPDD")
-    parser.add_argument("--platform", required=True,
-                        choices=["claude", "cursor", "copilot", "opencode", "all"])
+    parser = argparse.ArgumentParser(
+        description="Gera arquivos de plataforma para workspace SSPDD"
+    )
+    parser.add_argument(
+        "--platform",
+        required=True,
+        choices=["claude", "cursor", "copilot", "opencode", "all"],
+    )
     parser.add_argument("--path", required=True, help="Raiz do workspace destino")
-    parser.add_argument("--source", required=True, help="Caminho para .agents/ do framework")
+    parser.add_argument(
+        "--source", required=True, help="Caminho para .agents/ do framework"
+    )
     args = parser.parse_args()
 
     source = Path(args.source).resolve()
@@ -138,7 +153,11 @@ def main():
     if not skills:
         print("[AVISO] Nenhum SKILL.md encontrado em source/skills/.")
 
-    platforms = ["claude", "cursor", "copilot", "opencode"] if args.platform == "all" else [args.platform]
+    platforms = (
+        ["claude", "cursor", "copilot", "opencode"]
+        if args.platform == "all"
+        else [args.platform]
+    )
 
     for plat in platforms:
         if plat == "claude":

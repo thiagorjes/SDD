@@ -44,6 +44,7 @@ def _run_full_init(tmp_path, lang="pt_BR", platform="claude", skip_rtk=True):
 # Estrutura de diretorios
 # ---------------------------------------------------------------------------
 
+
 def test_create_directory_structure_cria_docs_subdirs(tmp_path):
     dest = tmp_path / "ws"
     init.create_directory_structure(dest)
@@ -64,7 +65,10 @@ def test_check_python_version_ok(capsys):
 # AGENTS.md / CLAUDE.md / memory
 # ---------------------------------------------------------------------------
 
-@pytest.mark.parametrize("lang,expected", [("pt_BR", "português"), ("en_US", "English")])
+
+@pytest.mark.parametrize(
+    "lang,expected", [("pt_BR", "português"), ("en_US", "English")]
+)
 def test_generate_comportamento_md_usa_idioma_correto(tmp_path, lang, expected):
     dest = _run_full_init(tmp_path, lang=lang)
     content = (dest / "comportamento.md").read_text(encoding="utf-8")
@@ -113,6 +117,7 @@ def test_workspace_completo_sem_placeholders_nao_substituidos(tmp_path):
 # Idiomas
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.parametrize("lang", ["pt_BR", "en_US"])
 def test_copy_agents_usa_pasta_do_idioma(tmp_path, lang):
     dest = tmp_path / "ws"
@@ -140,6 +145,7 @@ def test_validate_args_lang_invalido_usa_pt_br(tmp_path, capsys):
 # RTK
 # ---------------------------------------------------------------------------
 
+
 def test_check_rtk_ausente_retorna_none(monkeypatch, capsys):
     monkeypatch.setattr(init.shutil, "which", lambda name: None)
     result = init.check_rtk(skip=False)
@@ -155,7 +161,9 @@ def test_check_rtk_presente_retorna_path(monkeypatch):
 
 def test_check_rtk_skip_nao_verifica(monkeypatch):
     called = []
-    monkeypatch.setattr(init.shutil, "which", lambda name: called.append(name) or "/usr/bin/rtk")
+    monkeypatch.setattr(
+        init.shutil, "which", lambda name: called.append(name) or "/usr/bin/rtk"
+    )
     result = init.check_rtk(skip=True)
     assert result is None
     assert called == []  # shutil.which nunca foi chamado

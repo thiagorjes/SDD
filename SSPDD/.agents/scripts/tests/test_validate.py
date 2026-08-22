@@ -25,6 +25,7 @@ spec.loader.exec_module(validate)
 # Unit: parse_registry / stale detection
 # ---------------------------------------------------------------------------
 
+
 def test_parse_registry_extrai_artefatos_e_status(tmp_path):
     state_md = tmp_path / "state.md"
     state_md.write_text(
@@ -64,7 +65,14 @@ def test_mode_input_detecta_stale(tmp_path, monkeypatch):
     prd = docs / "x-prd.md"
     prd.write_text("# PRD", encoding="utf-8")
 
-    rules = {"modes": {"input": {"check_registry": True, "required_artifacts": ["docs/prd/x-prd.md"]}}}
+    rules = {
+        "modes": {
+            "input": {
+                "check_registry": True,
+                "required_artifacts": ["docs/prd/x-prd.md"],
+            }
+        }
+    }
     errors = validate.mode_input(rules, prd)
     assert any("stale" in e for e in errors)
 
@@ -72,6 +80,7 @@ def test_mode_input_detecta_stale(tmp_path, monkeypatch):
 # ---------------------------------------------------------------------------
 # Unit: id_patterns
 # ---------------------------------------------------------------------------
+
 
 def test_check_id_patterns_aceita_id_valido():
     content = "Ver RF-001 e RF-002 no documento."
@@ -96,6 +105,7 @@ def test_check_id_patterns_aceita_id_com_ponto():
 # Unit: gherkin detection
 # ---------------------------------------------------------------------------
 
+
 def test_check_gherkin_detecta_ausencia():
     content = "RF-001 — Login\nSem criterio de aceite aqui."
     errors = validate.check_gherkin(content, ["RF"], {"RF": r"RF-\d{3}"})
@@ -104,7 +114,9 @@ def test_check_gherkin_detecta_ausencia():
 
 
 def test_check_gherkin_aceita_presenca_pt_br():
-    content = "RF-001 — Login\n**Dado que** o usuario esta na tela\n**Quando** ele clica"
+    content = (
+        "RF-001 — Login\n**Dado que** o usuario esta na tela\n**Quando** ele clica"
+    )
     errors = validate.check_gherkin(content, ["RF"], {"RF": r"RF-\d{3}"})
     assert errors == []
 
@@ -118,6 +130,7 @@ def test_check_gherkin_aceita_presenca_en_us():
 # ---------------------------------------------------------------------------
 # Unit: placeholder detection
 # ---------------------------------------------------------------------------
+
 
 def test_check_placeholders_detecta_nao_substituido():
     content = "Projeto: {{PROJECT_NAME}} criado em {{DATE}}."
@@ -133,6 +146,7 @@ def test_check_placeholders_conteudo_limpo():
 # ---------------------------------------------------------------------------
 # Unit: custom_steps (subprocess mockado)
 # ---------------------------------------------------------------------------
+
 
 class _FakeCompletedProcess:
     def __init__(self, returncode, stderr=""):
@@ -157,7 +171,14 @@ def test_run_custom_steps_falha_gera_erro(monkeypatch):
 
     monkeypatch.setattr(validate, "subprocess", subprocess)
     monkeypatch.setattr(subprocess, "run", fake_run)
-    steps = [{"name": "check_rf_coverage", "script": "check.py", "args": [], "on_failure": "error"}]
+    steps = [
+        {
+            "name": "check_rf_coverage",
+            "script": "check.py",
+            "args": [],
+            "on_failure": "error",
+        }
+    ]
     messages = validate.run_custom_steps(steps, "artifact.md", Path("."))
     assert any("ERRO" in m and "RF-999" in m for m in messages)
 
@@ -168,7 +189,9 @@ def test_run_custom_steps_on_failure_warning(monkeypatch):
 
     monkeypatch.setattr(validate, "subprocess", subprocess)
     monkeypatch.setattr(subprocess, "run", fake_run)
-    steps = [{"name": "step", "script": "check.py", "args": [], "on_failure": "warning"}]
+    steps = [
+        {"name": "step", "script": "check.py", "args": [], "on_failure": "warning"}
+    ]
     messages = validate.run_custom_steps(steps, "artifact.md", Path("."))
     assert all(m.startswith("AVISO") for m in messages)
 
@@ -178,15 +201,32 @@ def test_run_custom_steps_on_failure_warning(monkeypatch):
 # ---------------------------------------------------------------------------
 
 SKILLS_COM_FIXTURE = [
-    "prd", "techspec", "tasks", "discovery",
-    "spdd-canvas", "spdd-sync", "guidelines", "code-review",
+    "prd",
+    "techspec",
+    "tasks",
+    "discovery",
+    "spdd-canvas",
+    "spdd-sync",
+    "guidelines",
+    "code-review",
 ]
 
 
 def _run_cli(rules: Path, artifact: Path, mode: str = "output"):
     return subprocess.run(
-        [sys.executable, str(VALIDATE_PY), "--mode", mode, "--rules", str(rules), "--artifact", str(artifact)],
-        capture_output=True, text=True, cwd=str(SCRIPT_DIR.parent.parent),
+        [
+            sys.executable,
+            str(VALIDATE_PY),
+            "--mode",
+            mode,
+            "--rules",
+            str(rules),
+            "--artifact",
+            str(artifact),
+        ],
+        capture_output=True,
+        text=True,
+        cwd=str(SCRIPT_DIR.parent.parent),
     )
 
 
@@ -198,7 +238,9 @@ def test_fixture_valida_passa(skill):
     assert valid_files, f"nenhuma fixture valid_*.md para {skill}"
     for f in valid_files:
         result = _run_cli(rules, f)
-        assert result.returncode == 0, f"{skill}/{f.name} deveria passar: {result.stderr}"
+        assert (
+            result.returncode == 0
+        ), f"{skill}/{f.name} deveria passar: {result.stderr}"
 
 
 @pytest.mark.parametrize("skill", SKILLS_COM_FIXTURE)
@@ -209,13 +251,16 @@ def test_fixture_invalida_falha(skill):
     assert invalid_files, f"nenhuma fixture invalid_*.md para {skill}"
     for f in invalid_files:
         result = _run_cli(rules, f)
-        assert result.returncode == 1, f"{skill}/{f.name} deveria falhar: exit={result.returncode}"
+        assert (
+            result.returncode == 1
+        ), f"{skill}/{f.name} deveria falhar: exit={result.returncode}"
         assert "ERRO" in result.stderr
 
 
 # ---------------------------------------------------------------------------
 # Benchmark: p95 < 5s para arquivo de 500 linhas
 # ---------------------------------------------------------------------------
+
 
 def test_benchmark_arquivo_500_linhas(tmp_path):
     lines = ["# Documento de Teste", ""]
@@ -225,9 +270,19 @@ def test_benchmark_arquivo_500_linhas(tmp_path):
     artifact.write_text("\n".join(lines), encoding="utf-8")
 
     rules_path = tmp_path / "rules.json"
-    rules_path.write_text(json.dumps({
-        "modes": {"output": {"required_sections": ["# Documento de Teste"], "no_empty_placeholders": True}}
-    }), encoding="utf-8")
+    rules_path.write_text(
+        json.dumps(
+            {
+                "modes": {
+                    "output": {
+                        "required_sections": ["# Documento de Teste"],
+                        "no_empty_placeholders": True,
+                    }
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
 
     durations = []
     for _ in range(5):

@@ -79,7 +79,11 @@ _Atualizado em: 2026-08-22_
 - **Etapa concluída:** TASK-10.3 — Suite de testes de validate_skills.py e fixture de referência — 2026-08-22
 - **Arquivos:** .agents/scripts/tests/test_validate_skills.py (7 testes), .agents/scripts/tests/fixtures/SKILL.md.example
 - **Testes:** `pytest .agents/scripts/tests/ scripts/tests/ -v` — 56/56 passando
-- **Próxima task:** TASK-10.4 (GitHub Actions CI workflow)
+- **EPIC-10 concluído** (TASK-10.1, 10.2, 10.3, 10.4)
+- **Etapa concluída:** TASK-10.4 — GitHub Actions CI workflow — 2026-08-22
+- **Arquivos:** .github/workflows/ci.yml (jobs lint-python, test-scripts, validate-skills, test-init; matrix 3 SOs × 3 versões Python), README.md (+badge CI), fix de lint (validate.py: variável ambígua `l`→`line`) e formatação ruff em 7 arquivos Python
+- **Testes:** `ruff check` e `ruff format --check` sem erros; `pytest .agents/scripts/tests/ scripts/tests/ -v` — 56/56 passando
+- **Próxima task:** Todas as tasks do backlog concluídas — aguardando orientação do usuário (ex: /code-review ou nova feature)
 
 ## Artifact Registry
 

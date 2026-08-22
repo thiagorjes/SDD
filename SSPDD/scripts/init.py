@@ -13,15 +13,24 @@ from pathlib import Path
 MIN_PYTHON = (3, 10)
 
 DOCS_SUBDIRS = [
-    "prd", "techspec", "tasks", "spdd", "decisions",
-    "contracts", "checklists", "design", "discovery",
+    "prd",
+    "techspec",
+    "tasks",
+    "spdd",
+    "decisions",
+    "contracts",
+    "checklists",
+    "design",
+    "discovery",
 ]
 
 
 def check_python_version():
     if sys.version_info < MIN_PYTHON:
-        print(f"ERRO: Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ necessário. "
-              f"Versão atual: {sys.version_info.major}.{sys.version_info.minor}")
+        print(
+            f"ERRO: Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ necessário. "
+            f"Versão atual: {sys.version_info.major}.{sys.version_info.minor}"
+        )
         sys.exit(1)
 
 
@@ -38,7 +47,11 @@ def validate_args(args) -> tuple[Path, Path, str, str, bool]:
         lang = "pt_BR"
 
     if dest.exists() and any(dest.iterdir()):
-        answer = input(f"[AVISO] '{dest}' já contém arquivos. Continuar? [s/N] ").strip().lower()
+        answer = (
+            input(f"[AVISO] '{dest}' já contém arquivos. Continuar? [s/N] ")
+            .strip()
+            .lower()
+        )
         if answer != "s":
             print("Inicialização cancelada.")
             sys.exit(1)
@@ -95,7 +108,9 @@ def copy_agents(source: Path, dest: Path, lang: str):
     if templates_src.exists():
         shutil.copytree(templates_src, templates_dest, dirs_exist_ok=True)
     elif (agents_src / "templates").exists():
-        shutil.copytree(agents_src / "templates", agents_dest / "templates", dirs_exist_ok=True)
+        shutil.copytree(
+            agents_src / "templates", agents_dest / "templates", dirs_exist_ok=True
+        )
 
 
 def read_template(source: Path, lang: str, name: str) -> str | None:
@@ -115,19 +130,25 @@ def read_skills_info(source: Path) -> list[dict]:
     if not skills_dir.exists():
         return skills
     import re
+
     for skill_dir in sorted(skills_dir.iterdir()):
         skill_md = skill_dir / "SKILL.md"
         if not skill_md.exists():
             continue
         content = skill_md.read_text(encoding="utf-8")
-        m = re.search(r'^---\n(.*?)\n---', content, re.DOTALL)
+        m = re.search(r"^---\n(.*?)\n---", content, re.DOTALL)
         if not m:
             continue
         fm = m.group(1)
-        name_m = re.search(r'^name:\s*(.+)$', fm, re.MULTILINE)
-        desc_m = re.search(r'^description:\s*(.+)$', fm, re.MULTILINE)
+        name_m = re.search(r"^name:\s*(.+)$", fm, re.MULTILINE)
+        desc_m = re.search(r"^description:\s*(.+)$", fm, re.MULTILINE)
         if name_m and desc_m:
-            skills.append({"name": name_m.group(1).strip(), "description": desc_m.group(1).strip()})
+            skills.append(
+                {
+                    "name": name_m.group(1).strip(),
+                    "description": desc_m.group(1).strip(),
+                }
+            )
     return skills
 
 
@@ -137,35 +158,43 @@ def read_agents_info(source: Path) -> list[dict]:
     if not agents_dir.exists():
         return agents
     import re
+
     for agent_md in sorted(agents_dir.glob("*.md")):
         content = agent_md.read_text(encoding="utf-8")
-        role_m = re.search(r'^##\s*Role\s*\n(.+)$', content, re.MULTILINE)
-        agents.append({
-            "name": agent_md.stem,
-            "role": role_m.group(1).strip() if role_m else "",
-        })
+        role_m = re.search(r"^##\s*Role\s*\n(.+)$", content, re.MULTILINE)
+        agents.append(
+            {
+                "name": agent_md.stem,
+                "role": role_m.group(1).strip() if role_m else "",
+            }
+        )
     return agents
 
 
-def generate_agents_md(source: Path, dest: Path, project_name: str, today: str, lang: str):
+def generate_agents_md(
+    source: Path, dest: Path, project_name: str, today: str, lang: str
+):
     template = read_template(source, lang, "AGENTS.md-template")
     skills = read_skills_info(source)
     agents = read_agents_info(source)
 
-    skills_block = "\n".join(
-        f"- **/{s['name']}** — {s['description']}" for s in skills
-    ) or "_(skills serão listadas após geração)_"
-    agents_block = "\n".join(
-        f"- **{a['name']}** — {a['role']}" for a in agents
-    ) or "_(agents serão listados após geração)_"
+    skills_block = (
+        "\n".join(f"- **/{s['name']}** — {s['description']}" for s in skills)
+        or "_(skills serão listadas após geração)_"
+    )
+    agents_block = (
+        "\n".join(f"- **{a['name']}** — {a['role']}" for a in agents)
+        or "_(agents serão listados após geração)_"
+    )
 
     if template:
-        content = (template
-                   .replace("{{PROJECT_NAME}}", project_name)
-                   .replace("{{DATE}}", today)
-                   .replace("{{LANG}}", lang)
-                   .replace("{{SKILLS_LIST}}", skills_block)
-                   .replace("{{AGENTS_LIST}}", agents_block))
+        content = (
+            template.replace("{{PROJECT_NAME}}", project_name)
+            .replace("{{DATE}}", today)
+            .replace("{{LANG}}", lang)
+            .replace("{{SKILLS_LIST}}", skills_block)
+            .replace("{{AGENTS_LIST}}", agents_block)
+        )
     else:
         content = f"""# AGENTS.md — {project_name}
 
@@ -181,14 +210,17 @@ def generate_agents_md(source: Path, dest: Path, project_name: str, today: str, 
     (dest / "AGENTS.md").write_text(content, encoding="utf-8")
 
 
-def generate_claude_md(source: Path, dest: Path, project_name: str, today: str, lang: str):
+def generate_claude_md(
+    source: Path, dest: Path, project_name: str, today: str, lang: str
+):
     template = read_template(source, lang, "CLAUDE.md-template")
 
     if template:
-        content = (template
-                   .replace("{{PROJECT_NAME}}", project_name)
-                   .replace("{{DATE}}", today)
-                   .replace("{{LANG}}", lang))
+        content = (
+            template.replace("{{PROJECT_NAME}}", project_name)
+            .replace("{{DATE}}", today)
+            .replace("{{LANG}}", lang)
+        )
     else:
         content = f"""# CLAUDE.md — {project_name}
 
@@ -200,14 +232,17 @@ def generate_claude_md(source: Path, dest: Path, project_name: str, today: str, 
     (dest / "CLAUDE.md").write_text(content, encoding="utf-8")
 
 
-def generate_comportamento_md(source: Path, dest: Path, project_name: str, today: str, lang: str):
+def generate_comportamento_md(
+    source: Path, dest: Path, project_name: str, today: str, lang: str
+):
     template = read_template(source, lang, "comportamento.md-template")
 
     if template:
-        content = (template
-                   .replace("{{PROJECT_NAME}}", project_name)
-                   .replace("{{DATE}}", today)
-                   .replace("{{LANG}}", lang))
+        content = (
+            template.replace("{{PROJECT_NAME}}", project_name)
+            .replace("{{DATE}}", today)
+            .replace("{{LANG}}", lang)
+        )
     else:
         content = "# comportamento.md\n\n_(template não encontrado — preencher manualmente)_\n"
 
@@ -219,10 +254,11 @@ def generate_memory(source: Path, dest: Path, project_name: str, today: str, lan
 
     state_template = read_template(source, lang, "memory/state-template.md")
     if state_template:
-        state_content = (state_template
-                         .replace("{{PROJECT_NAME}}", project_name)
-                         .replace("{{DATE}}", today)
-                         .replace("{{LANG}}", lang))
+        state_content = (
+            state_template.replace("{{PROJECT_NAME}}", project_name)
+            .replace("{{DATE}}", today)
+            .replace("{{LANG}}", lang)
+        )
     else:
         state_content = f"""# Estado Operacional — {project_name}
 _Atualizado em: {today}_
@@ -270,12 +306,15 @@ _Atualizado em: {today}_
 
     (memory_dir / "state.md").write_text(state_content, encoding="utf-8")
 
-    constitution_template = read_template(source, lang, "memory/constitution-template.md")
+    constitution_template = read_template(
+        source, lang, "memory/constitution-template.md"
+    )
     if constitution_template:
-        constitution_content = (constitution_template
-                                .replace("{{PROJECT_NAME}}", project_name)
-                                .replace("{{DATE}}", today)
-                                .replace("{{LANG}}", lang))
+        constitution_content = (
+            constitution_template.replace("{{PROJECT_NAME}}", project_name)
+            .replace("{{DATE}}", today)
+            .replace("{{LANG}}", lang)
+        )
     else:
         constitution_content = f"""# Constituição — {project_name}
 _Criada em: {today}_
@@ -315,9 +354,11 @@ _(preencher após /guidelines)_
 def copy_gitignore(source: Path, dest: Path, project_name: str, today: str):
     template_path = source / ".agents" / "templates" / "gitignore-template"
     if template_path.exists():
-        content = (template_path.read_text(encoding="utf-8")
-                   .replace("{{PROJECT_NAME}}", project_name)
-                   .replace("{{DATE}}", today))
+        content = (
+            template_path.read_text(encoding="utf-8")
+            .replace("{{PROJECT_NAME}}", project_name)
+            .replace("{{DATE}}", today)
+        )
     else:
         content = """# SSPDD workspace .gitignore
 
@@ -350,11 +391,23 @@ __pycache__/
 def call_generate_platform(source: Path, dest: Path, platform: str):
     script = source / ".agents" / "scripts" / "generate_platform.py"
     if not script.exists():
-        print(f"[AVISO] generate_platform.py não encontrado. Pulando geração de plataforma.")
+        print(
+            "[AVISO] generate_platform.py não encontrado. Pulando geração de plataforma."
+        )
         return
     result = subprocess.run(
-        [sys.executable, str(script), "--platform", platform, "--path", str(dest), "--source", str(source / ".agents")],
-        capture_output=True, text=True
+        [
+            sys.executable,
+            str(script),
+            "--platform",
+            platform,
+            "--path",
+            str(dest),
+            "--source",
+            str(source / ".agents"),
+        ],
+        capture_output=True,
+        text=True,
     )
     if result.returncode != 0:
         print(f"[AVISO] generate_platform.py: {result.stderr.strip()}")
@@ -364,8 +417,7 @@ def init_rtk(rtk_path: str | None, dest: Path, platform: str):
     if rtk_path is None:
         return False
     result = subprocess.run(
-        [rtk_path, "init", "-g"],
-        cwd=str(dest), capture_output=True, text=True
+        [rtk_path, "init", "-g"], cwd=str(dest), capture_output=True, text=True
     )
     if result.returncode != 0:
         print(f"[AVISO] RTK init falhou: {result.stderr.strip()}")
@@ -379,11 +431,23 @@ def main():
     parser = argparse.ArgumentParser(description="Inicializa workspace SSPDD")
     parser.add_argument("--project", required=True, help="Nome do projeto")
     parser.add_argument("--path", required=True, help="Caminho de destino do workspace")
-    parser.add_argument("--lang", default="pt_BR", choices=["pt_BR", "en_US"], help="Idioma dos templates")
-    parser.add_argument("--platform", default="claude",
-                        choices=["claude", "cursor", "copilot", "opencode", "all"],
-                        help="Plataforma de IA alvo")
-    parser.add_argument("--skip-rtk", action="store_true", help="Pular verificação e inicialização do RTK")
+    parser.add_argument(
+        "--lang",
+        default="pt_BR",
+        choices=["pt_BR", "en_US"],
+        help="Idioma dos templates",
+    )
+    parser.add_argument(
+        "--platform",
+        default="claude",
+        choices=["claude", "cursor", "copilot", "opencode", "all"],
+        help="Plataforma de IA alvo",
+    )
+    parser.add_argument(
+        "--skip-rtk",
+        action="store_true",
+        help="Pular verificação e inicialização do RTK",
+    )
     args = parser.parse_args()
 
     source = resolve_source()
@@ -406,7 +470,7 @@ def main():
 
     rtk_ok = init_rtk(rtk_path, dest, platform)
 
-    print(f"\nOK - Workspace \"{args.project}\" criado em {dest}")
+    print(f'\nOK - Workspace "{args.project}" criado em {dest}')
     print(f"OK - Idioma: {lang}")
     print(f"OK - Plataforma: {platform}")
     if skip_rtk:

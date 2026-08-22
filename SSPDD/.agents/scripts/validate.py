@@ -14,9 +14,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-REGISTRY_ROW = re.compile(r'^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|')
-PLACEHOLDER_RE = re.compile(r'\{\{[A-Z_]+\}\}')
-HEADER_RE = re.compile(r'^#{1,6}\s+(.+)$', re.MULTILINE)
+REGISTRY_ROW = re.compile(r"^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|")
+PLACEHOLDER_RE = re.compile(r"\{\{[A-Z_]+\}\}")
+HEADER_RE = re.compile(r"^#{1,6}\s+(.+)$", re.MULTILINE)
 
 
 def load_rules(rules_path: Path, system: str, feature: str, artifact: str) -> dict:
@@ -79,7 +79,7 @@ def check_required_sections(content: str, required: list[str]) -> list[str]:
     headings = set(HEADER_RE.findall(content))
     for section in required:
         # Strip leading '#' and spaces for comparison
-        bare = re.sub(r'^#+\s*', '', section).strip()
+        bare = re.sub(r"^#+\s*", "", section).strip()
         if not any(bare == h.strip() for h in headings):
             errors.append(f'ERRO: Seção obrigatória ausente: "{section}"')
     return errors
@@ -96,31 +96,36 @@ def check_placeholders(content: str) -> list[str]:
 def check_id_patterns(content: str, patterns: dict[str, str]) -> list[str]:
     errors = []
     for id_type, pattern in patterns.items():
-        found = re.findall(rf'\b{id_type}-[\d.]+\b', content)
-        compiled = re.compile(f'^{pattern}$')
+        found = re.findall(rf"\b{id_type}-[\d.]+\b", content)
+        compiled = re.compile(f"^{pattern}$")
         for fid in found:
             if not compiled.match(fid):
                 errors.append(f"ERRO: ID '{fid}' não corresponde ao padrão '{pattern}'")
     return errors
 
 
-def check_gherkin(content: str, id_types: list[str], patterns: dict[str, str]) -> list[str]:
+def check_gherkin(
+    content: str, id_types: list[str], patterns: dict[str, str]
+) -> list[str]:
     errors = []
     for id_type in id_types:
-        pat = patterns.get(id_type, rf'{id_type}-\d{{3}}')
-        ids_found = re.findall(rf'\b{pat}\b', content)
+        pat = patterns.get(id_type, rf"{id_type}-\d{{3}}")
+        ids_found = re.findall(rf"\b{pat}\b", content)
         lines = content.splitlines()
         for rf_id in ids_found:
             # Find line index of this ID
-            rf_line_idx = next((i for i, l in enumerate(lines) if rf_id in l), None)
+            rf_line_idx = next(
+                (i for i, line in enumerate(lines) if rf_id in line), None
+            )
             if rf_line_idx is None:
                 continue
             # Search within 20 lines after for Gherkin keywords (pt_BR or en_US)
-            window = "\n".join(lines[rf_line_idx: rf_line_idx + 20])
-            has_gherkin = bool(re.search(
-                r'(\*\*Dado que\*\*|Given\b|\*\*When\*\*|\*\*Quando\*\*)',
-                window
-            ))
+            window = "\n".join(lines[rf_line_idx : rf_line_idx + 20])
+            has_gherkin = bool(
+                re.search(
+                    r"(\*\*Dado que\*\*|Given\b|\*\*When\*\*|\*\*Quando\*\*)", window
+                )
+            )
             if not has_gherkin:
                 errors.append(f"ERRO: {rf_id} não possui critério de aceite Gherkin")
     return errors
@@ -134,7 +139,9 @@ def run_custom_steps(steps: list[dict], artifact: str, cwd: Path) -> list[str]:
         on_failure = step.get("on_failure", "error")
         result = subprocess.run(
             [sys.executable, script, *args],
-            capture_output=True, text=True, cwd=str(cwd)
+            capture_output=True,
+            text=True,
+            cwd=str(cwd),
         )
         if result.returncode != 0:
             prefix = "ERRO" if on_failure == "error" else "AVISO"
@@ -152,7 +159,9 @@ def mode_input(rules: dict, artifact_path: Path) -> list[str]:
     input_cfg = modes.get("input", {})
 
     state_md = find_state_md(artifact_path)
-    registry = parse_registry(state_md) if input_cfg.get("check_registry", False) else {}
+    registry = (
+        parse_registry(state_md) if input_cfg.get("check_registry", False) else {}
+    )
 
     required = input_cfg.get("required_artifacts", [])
     for req in required:
@@ -183,7 +192,9 @@ def mode_output(rules: dict, artifact_path: Path) -> list[str]:
     modes = rules.get("modes", {})
     output_cfg = modes.get("output", {})
 
-    errors.extend(check_required_sections(content, output_cfg.get("required_sections", [])))
+    errors.extend(
+        check_required_sections(content, output_cfg.get("required_sections", []))
+    )
 
     if output_cfg.get("no_empty_placeholders", False):
         errors.extend(check_placeholders(content))
@@ -205,13 +216,23 @@ def mode_output(rules: dict, artifact_path: Path) -> list[str]:
 def main():
     parser = argparse.ArgumentParser(description="SSPDD artifact validator")
     parser.add_argument("--mode", required=True, choices=["input", "output"])
-    parser.add_argument("--rules", required=True, help="Caminho para validate-rules.json")
-    parser.add_argument("--artifact", required=True, help="Caminho para o artefato Markdown")
-    parser.add_argument("--system", default="", help="Nome do sistema (substitui {{SYSTEM}})")
+    parser.add_argument(
+        "--rules", required=True, help="Caminho para validate-rules.json"
+    )
+    parser.add_argument(
+        "--artifact", required=True, help="Caminho para o artefato Markdown"
+    )
+    parser.add_argument(
+        "--system", default="", help="Nome do sistema (substitui {{SYSTEM}})"
+    )
     args = parser.parse_args()
 
     artifact_path = Path(args.artifact)
-    feature = artifact_path.stem.replace("-prd", "").replace("-techspec", "").replace("-tasks", "")
+    feature = (
+        artifact_path.stem.replace("-prd", "")
+        .replace("-techspec", "")
+        .replace("-tasks", "")
+    )
 
     rules = load_rules(Path(args.rules), args.system, feature, args.artifact)
 

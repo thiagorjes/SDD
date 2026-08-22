@@ -1,4 +1,5 @@
 """Testes de validate_skills.py — validação estrutural de SKILL.md e DRs."""
+
 import sys
 from pathlib import Path
 
@@ -56,7 +57,9 @@ def test_skill_md_valido_sem_erros(tmp_path):
 
 
 def test_canvas_dimensions_invalido(tmp_path):
-    content = VALID_SKILL_MD.replace("canvas-dimensions: [R, E]", "canvas-dimensions: [X, E]")
+    content = VALID_SKILL_MD.replace(
+        "canvas-dimensions: [R, E]", "canvas-dimensions: [X, E]"
+    )
     skill_md = write_skill(tmp_path, content)
     errors = validate_skill(skill_md)
     assert any("canvas-dimensions inválido" in e for e in errors)
@@ -77,7 +80,9 @@ def test_frontmatter_ausente(tmp_path):
 
 
 def test_campo_frontmatter_faltando(tmp_path):
-    content = VALID_SKILL_MD.replace("output-artifacts:\n  - docs/techspec/exemplo-techspec.md\n", "")
+    content = VALID_SKILL_MD.replace(
+        "output-artifacts:\n  - docs/techspec/exemplo-techspec.md\n", ""
+    )
     skill_md = write_skill(tmp_path, content)
     errors = validate_skill(skill_md)
     assert any("output-artifacts" in e for e in errors)
@@ -98,7 +103,9 @@ def test_main_exit_0_skills_validas(tmp_path, capsys):
 
 
 def test_main_exit_1_skill_invalida(tmp_path, capsys):
-    content = VALID_SKILL_MD.replace("canvas-dimensions: [R, E]", "canvas-dimensions: [X]")
+    content = VALID_SKILL_MD.replace(
+        "canvas-dimensions: [R, E]", "canvas-dimensions: [X]"
+    )
     write_skill(tmp_path, content)
     old_argv = sys.argv
     sys.argv = ["validate_skills.py", str(tmp_path)]
