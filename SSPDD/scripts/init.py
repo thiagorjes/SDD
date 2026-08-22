@@ -391,15 +391,15 @@ def main():
 
     rtk_ok = init_rtk(rtk_path, dest, platform)
 
-    print(f"\n✓ Workspace \"{args.project}\" criado em {dest}")
-    print(f"✓ Idioma: {lang}")
-    print(f"✓ Plataforma: {platform}")
+    print(f"\nOK - Workspace \"{args.project}\" criado em {dest}")
+    print(f"OK - Idioma: {lang}")
+    print(f"OK - Plataforma: {platform}")
     if skip_rtk:
         print("  RTK: ignorado (--skip-rtk)")
     elif rtk_ok:
-        print("✓ RTK: habilitado")
+        print("OK - RTK: habilitado")
     else:
-        print("⚠ RTK: não instalado (opcional)")
+        print("AVISO - RTK: nao instalado (opcional)")
 
     print(f"""
 Próximos passos:

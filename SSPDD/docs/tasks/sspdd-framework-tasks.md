@@ -557,8 +557,8 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RF-011 | **Dependências:** EPIC-04 | **[P] com TASK-06.1**
 
 **O que deve ser feito:**
-- [ ] Frontmatter: `canvas-dimensions: [E]`, input: PRD, output: design-brief.md
-- [ ] Workflow: levantamento de tokens visuais → componentes → padrões de interação → atualizar dimensão E do canvas com entidades UX/UI → criar DRs tipo DDR
+- [x] Frontmatter: `canvas-dimensions: [E]`, input: PRD, output: design-brief.md
+- [x] Workflow: levantamento de tokens visuais → componentes → padrões de interação → atualizar dimensão E do canvas com entidades UX/UI → criar DRs tipo DDR
 
 **Critérios de aceite:**
 - SKILL.md passa `validate_skills.py`
@@ -570,9 +570,9 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RNF-005, RF-014 | **Dependências:** EPIC-02 | **[P] com TASK-06.1**
 
 **O que deve ser feito:**
-- [ ] Implementar `.agents/skills/analyze/scripts/check_rf_coverage.py` — lê tasks.md e PRD, verifica RF sem task, retorna exit 1 com lista de gaps
-- [ ] Implementar `.agents/skills/techspec/scripts/check_rf_coverage.py` — verifica RF do PRD sem cobertura na traceability matrix do TechSpec
-- [ ] Garantir interface: `python script.py --prd [path] [--tasks [path]]` com saída em stderr
+- [x] Implementar `.agents/skills/analyze/scripts/check_rf_coverage.py` — lê tasks.md e PRD, verifica RF sem task, retorna exit 1 com lista de gaps
+- [x] Implementar `.agents/skills/techspec/scripts/check_rf_coverage.py` — verifica RF do PRD sem cobertura na traceability matrix do TechSpec
+- [x] Garantir interface: `python script.py --prd [path] [--tasks [path]]` com saída em stderr
 
 **Critérios de aceite:**
 - `check_rf_coverage.py` detecta RF-999 fictício não coberto em tasks → exit 1 com mensagem
@@ -706,11 +706,11 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RF-016 | **Dependências:** TASK-01.1
 
 **O que deve ser feito:**
-- [ ] Implementar detecção: `shutil.which("rtk")` → None se não instalado
-- [ ] Se não instalado: exibir mensagem de aviso com instrução de instalação (brew + curl alternativas)
-- [ ] Se instalado: `subprocess.run(["rtk", "init", "-g"], cwd=path, capture_output=True)`
-- [ ] Capturar stderr do rtk e reportar como AVISO se qualquer erro; não abortar o init
-- [ ] Implementar flag `--skip-rtk` que bypassa as etapas 2 e 6
+- [x] Implementar detecção: `shutil.which("rtk")` → None se não instalado
+- [x] Se não instalado: exibir mensagem de aviso com instrução de instalação (brew + curl alternativas)
+- [x] Se instalado: `subprocess.run(["rtk", "init", "-g"], cwd=path, capture_output=True)`
+- [x] Capturar stderr do rtk e reportar como AVISO se qualquer erro; não abortar o init
+- [x] Implementar flag `--skip-rtk` que bypassa as etapas 2 e 6
 
 **Critérios de aceite:**
 - `init.py` com RTK ausente: exibe aviso e prossegue normalmente

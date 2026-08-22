@@ -62,7 +62,12 @@ _Atualizado em: 2026-08-22_
 - **Arquivos:** README.md (reescrito: o que é, badges, pipeline com canvas progressivo em ASCII, quick start de 3 comandos, estrutura de diretórios, seção Decision Records com os 4 tipos)
 - **Testes:** quick start validado manualmente via `scripts/init.py` em diretório temporário (task 08.2) — fluxo completo funcional
 - **EPIC-08 concluído** (TASK-08.1, 08.2, 08.3)
-- **Próxima task:** TASK-09.1 (Integração RTK) ou TASK-10.x (CI) — aguardando definição do usuário
+- **Etapa concluída:** TASK-06.3, TASK-06.4 — checkboxes retificados (implementação já existente: designer SKILL.md canvas-dimensions [E] + DDR, check_rf_coverage.py em analyze/techspec) — 2026-08-22
+- **Etapa concluída:** TASK-09.1 — Integração RTK no init.py — 2026-08-22
+- **Arquivos:** scripts/init.py (check_rtk/init_rtk/--skip-rtk já existiam; corrigido UnicodeEncodeError no print final em console cp1252 — trocado ✓/⚠ por OK-/AVISO-)
+- **Testes:** init.py executado em diretório temporário com e sem --skip-rtk — ambos exit 0, workspace completo gerado
+- **EPIC-09 concluído** (TASK-09.1)
+- **Próxima task:** TASK-10.1 (suite de testes validate.py engine)
 
 ## Artifact Registry
 
