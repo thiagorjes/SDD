@@ -45,7 +45,10 @@ _Atualizado em: 2026-08-22_
 - **Etapa concluída:** TASK-07.1 — Templates e schema de DRs — 2026-08-22
 - **Arquivos:** .agents/skills/decision-record/validate-rules.json, .agents/skills/decision-record/scripts/check_dr_status.py, .agents/scripts/validate_skills.py (validate_dr + chamada no main), fixtures valid_dr.md/invalid_dr.md
 - **Testes:** valid_dr.md → exit 0; invalid_dr.md → exit 1 (status inválido + seção ausente)
-- **Próxima task:** TASK-07.2 (Índice de DRs em constitution.md)
+- **Etapa concluída:** TASK-07.2 — Índice de DRs em constitution.md — 2026-08-22
+- **Arquivos:** .agents/templates/{pt_BR,en_US}/memory/constitution-template.md (nota de formato de link), .agents/skills/decision-record/README.md (helper: como criar DR e atualizar índice)
+- **Testes:** validate_dr_index (já existente desde TASK-02.4) confirmado detectando link quebrado → AVISO
+- **Próxima task:** TASK-07.3 (Integração DRs no canvas)
 
 ## Artifact Registry
 

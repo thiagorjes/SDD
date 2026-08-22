@@ -16,6 +16,11 @@ _Criada em: {{DATE}}_
 
 ## Decision Records
 
+> Ao criar uma nova DR, adicione uma linha na tabela do tipo correspondente.
+> Coluna **ID** deve ser um link relativo para o arquivo em `docs/decisions/`:
+> `[ADR-001](../docs/decisions/ADR-001-titulo-curto.md)`.
+> O próximo NNN é o maior já usado no tipo + 1 (contadores independentes por tipo — ver ADR-012).
+
 ### ADR
 
 | ID | Título | Status |

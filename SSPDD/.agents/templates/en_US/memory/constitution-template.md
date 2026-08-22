@@ -16,6 +16,11 @@ _Created: {{DATE}}_
 
 ## Decision Records
 
+> When creating a new DR, add a row to the matching type's table.
+> The **ID** column must be a relative link to the file in `docs/decisions/`:
+> `[ADR-001](../docs/decisions/ADR-001-short-title.md)`.
+> The next NNN is the highest already used for that type + 1 (independent counters per type — see ADR-012).
+
 ### ADR
 
 | ID | Title | Status |
