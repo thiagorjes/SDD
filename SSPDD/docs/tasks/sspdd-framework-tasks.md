@@ -514,10 +514,10 @@ Skill que detecta divergências entre o REASONS Canvas e o código implementado.
 Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF origem, canvas divergindo de TechSpec, contradições entre artefatos.
 
 **O que deve ser feito:**
-- [ ] Definir frontmatter: `canvas-dimensions: []`, input: PRD + TechSpec + Tasks + Canvas
-- [ ] Workflow: ler todos os artefatos → mapear RF→Task (detectar gaps) → mapear canvas dimensões→artefatos (detectar divergências) → gerar relatório
-- [ ] Adicionar custom_step no validate-rules.json: `check_rf_coverage.py` que verifica RF→Task coverage
-- [ ] Relatório: agrupado por tipo de achado (gap, divergência, contradição)
+- [x] Definir frontmatter: `canvas-dimensions: []`, input: PRD + TechSpec + Tasks + Canvas
+- [x] Workflow: ler todos os artefatos → mapear RF→Task (detectar gaps) → mapear canvas dimensões→artefatos (detectar divergências) → gerar relatório
+- [x] Adicionar custom_step no validate-rules.json: `check_rf_coverage.py` que verifica RF→Task coverage
+- [x] Relatório: agrupado por tipo de achado (gap, divergência, contradição)
 
 **Critérios de aceite:**
 - SKILL.md passa `validate_skills.py`
@@ -531,8 +531,8 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RF-011 | **Dependências:** EPIC-04 | **[P] com TASK-06.2..06**
 
 **O que deve ser feito:**
-- [ ] Frontmatter: `canvas-dimensions: [R]`, input: PRD com questões em aberto
-- [ ] Workflow: identificar ambiguidades no PRD → apresentar uma por vez → atualizar PRD → bump versão MINOR → atualizar Artifact Registry → marcar downstream como stale
+- [x] Frontmatter: `canvas-dimensions: [R]`, input: PRD com questões em aberto
+- [x] Workflow: identificar ambiguidades no PRD → apresentar uma por vez → atualizar PRD → bump versão MINOR → atualizar Artifact Registry → marcar downstream como stale
 
 **Critérios de aceite:**
 - SKILL.md passa `validate_skills.py`
