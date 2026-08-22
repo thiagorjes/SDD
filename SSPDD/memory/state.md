@@ -39,10 +39,10 @@ _Atualizado em: 2026-08-22_
 - **Artefatos:** docs/techspec/sspdd-framework-techspec.md + data-model.md + script-contracts/ + quickstart.md
 - **Etapa concluída:** /tasks (v1.0) — 2026-08-22
 - **Artefato:** docs/tasks/sspdd-framework-tasks.md
-- **Task implementada:** TASK-04.9 — SKILL.md /tests com modo TDD e modo audit — 2026-08-22
-- **Arquivos:** .agents/skills/tests/SKILL.md
+- **Task implementada:** TASK-05.1 — SKILL.md /spdd-canvas com geração progressiva e transição DRAFT->READY — 2026-08-22
+- **Arquivos:** .agents/skills/spdd-canvas/SKILL.md
 - **Testes:** não aplicável (task de documentação)
-- **Próxima task:** TASK-05.1
+- **Próxima task:** TASK-05.2
 
 ## Artifact Registry
 

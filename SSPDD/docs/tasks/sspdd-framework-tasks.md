@@ -476,11 +476,11 @@ Skill mais complexa do pipeline. Deve incluir: validação de guidelines por tip
 Skill que gera o REASONS Canvas completo a partir do PRD + TechSpec (para features que não passaram pelo /discovery). Também responsável pela atualização manual do canvas quando necessário.
 
 **O que deve ser feito:**
-- [ ] Definir frontmatter: `canvas-dimensions: [R, E, A, S, O, N, S]`
-- [ ] Workflow: ler PRD + TechSpec + Tasks (se existir) → preencher cada dimensão com ownership → salvar progressivamente dimensão por dimensão
-- [ ] Regra: nunca publicar canvas com dimensão O vazia (status permanece DRAFT)
-- [ ] Ao final: verificar completude → se todas 7 preenchidas → status `READY`
-- [ ] Adicionar validate-rules.json já criado na TASK-02.3
+- [x] Definir frontmatter: `canvas-dimensions: [R, E, A, S, O, N, S]`
+- [x] Workflow: ler PRD + TechSpec + Tasks (se existir) → preencher cada dimensão com ownership → salvar progressivamente dimensão por dimensão
+- [x] Regra: nunca publicar canvas com dimensão O vazia (status permanece DRAFT)
+- [x] Ao final: verificar completude → se todas 7 preenchidas → status `READY`
+- [x] Adicionar validate-rules.json já criado na TASK-02.3
 
 **Critérios de aceite:**
 - SKILL.md passa `validate_skills.py`
