@@ -70,7 +70,10 @@ _Atualizado em: 2026-08-22_
 - **Etapa concluída:** TASK-10.1 — Suite de testes do validate.py engine — 2026-08-22
 - **Arquivos:** .agents/scripts/tests/test_validate.py (31 testes); fix em .agents/scripts/validate.py — `load_rules` não substitui mais `{{INPUT_ARTIFACT}}` no JSON bruto (bug real: paths Windows com `\` quebravam o parse JSON de techspec e spdd-canvas validate-rules.json; substituição correta já ocorria em `run_custom_steps`)
 - **Testes:** `pytest .agents/scripts/tests/ -v` — 31/31 passando (unitários: registry/stale, id_patterns, gherkin, placeholders, custom_steps mockado; integração: 8 skills × valid/invalid fixture; benchmark: p95 < 5s para 500 linhas)
-- **Próxima task:** TASK-10.2 (suite de testes init.py)
+- **Etapa concluída:** TASK-10.2 — Suite de testes do init.py — 2026-08-22
+- **Arquivos:** scripts/tests/test_init.py (15 testes)
+- **Testes:** `pytest scripts/tests/ -v` — 15/15 passando (estrutura de diretórios, AGENTS.md/CLAUDE.md/memory gerados, seleção de template por --lang pt_BR/en_US, RTK mockado ausente/presente/skip, subprocess de rtk init -g)
+- **Próxima task:** TASK-10.3 (validate_skills.py e CI check)
 
 ## Artifact Registry
 

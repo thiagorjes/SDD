@@ -741,11 +741,11 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RF-010, RF-016 | **Dependências:** EPIC-01, 09
 
 **O que deve ser feito:**
-- [ ] Testes usando `tmp_path` do pytest para criar workspace em diretório temporário
-- [ ] Testar: estrutura de diretórios criada, AGENTS.md gerado, CLAUDE.md gerado, Artifact Registry inicializado
-- [ ] Testar com `--lang pt_BR` e `--lang en_US`
-- [ ] Testar RTK: mock `shutil.which` → None e → `/usr/bin/rtk`; verificar chamada a subprocess
-- [ ] Testar `--skip-rtk`
+- [x] Testes usando `tmp_path` do pytest para criar workspace em diretório temporário
+- [x] Testar: estrutura de diretórios criada, AGENTS.md gerado, CLAUDE.md gerado, Artifact Registry inicializado
+- [x] Testar com `--lang pt_BR` e `--lang en_US`
+- [x] Testar RTK: mock `shutil.which` → None e → `/usr/bin/rtk`; verificar chamada a subprocess
+- [x] Testar `--skip-rtk`
 
 **Critérios de aceite:**
 - `pytest scripts/tests/ -v` → 100% passam
