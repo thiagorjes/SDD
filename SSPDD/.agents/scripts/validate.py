@@ -92,7 +92,7 @@ def check_placeholders(content: str) -> list[str]:
 def check_id_patterns(content: str, patterns: dict[str, str]) -> list[str]:
     errors = []
     for id_type, pattern in patterns.items():
-        found = re.findall(rf'\b{id_type}-\d+\b', content)
+        found = re.findall(rf'\b{id_type}-[\d.]+\b', content)
         compiled = re.compile(f'^{pattern}$')
         for fid in found:
             if not compiled.match(fid):
@@ -164,7 +164,7 @@ def mode_input(rules: dict, artifact_path: Path) -> list[str]:
             errors.append(f"ERRO: Artefato stale: {req} ({status})")
 
     steps = input_cfg.get("custom_steps", [])
-    errors.extend(run_custom_steps(steps, str(artifact_path), artifact_path.parent))
+    errors.extend(run_custom_steps(steps, str(artifact_path), Path.cwd()))
 
     return errors
 
@@ -193,7 +193,7 @@ def mode_output(rules: dict, artifact_path: Path) -> list[str]:
         errors.extend(check_gherkin(content, gherkin_ids, id_patterns))
 
     steps = output_cfg.get("custom_steps", [])
-    errors.extend(run_custom_steps(steps, str(artifact_path), artifact_path.parent))
+    errors.extend(run_custom_steps(steps, str(artifact_path), Path.cwd()))
 
     return errors
 

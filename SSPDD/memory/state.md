@@ -39,10 +39,10 @@ _Atualizado em: 2026-08-22_
 - **Artefatos:** docs/techspec/sspdd-framework-techspec.md + data-model.md + script-contracts/ + quickstart.md
 - **Etapa concluída:** /tasks (v1.0) — 2026-08-22
 - **Artefato:** docs/tasks/sspdd-framework-tasks.md
-- **Task implementada:** TASK-06.3 — SKILL.md /designer com entrevista de tokens/componentes/interação, DDRs e atualização da dimensão E do canvas — 2026-08-22
-- **Arquivos:** .agents/skills/designer/SKILL.md, .agents/skills/designer/validate-rules.json
-- **Testes:** validate_skills.py — 15 skills verificadas, todas válidas
-- **Próxima task:** TASK-06.6
+- **Task implementada:** TASK-06.6 — Fixtures valid/invalid para 8 skills (prd, techspec, tasks, discovery, spdd-canvas, spdd-sync, guidelines, code-review); corrigidos 2 bugs no validate.py engine descobertos pelos testes (regex de id_patterns não capturava IDs com ponto, ex. TASK-01.1; cwd de custom_steps impedia localizar scripts) — 2026-08-22
+- **Arquivos:** .agents/scripts/validate.py, .agents/skills/{prd,techspec,tasks,discovery,spdd-canvas,spdd-sync,guidelines,code-review}/scripts/tests/fixtures/*.md
+- **Testes:** cada valid_*.md → exit 0; cada invalid_*.md → exit 1 com erros esperados; validate_skills.py — 15 skills válidas
+- **Próxima task:** TASK-07.1 (EPIC-07 — Decision Records)
 
 ## Artifact Registry
 
