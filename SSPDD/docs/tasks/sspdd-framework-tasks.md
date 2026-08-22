@@ -757,9 +757,9 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RNF-004, RNF-007 | **Dependências:** EPIC-02, 04, 05, 06
 
 **O que deve ser feito:**
-- [ ] Implementar `validate_skills.py` conforme TASK-02.4
-- [ ] Testes: SKILL.md válido → exit 0; canvas-dimensions inválido → exit 1; seção ausente → exit 1
-- [ ] Criar fixture de SKILL.md mínimo válido para referência de contributors
+- [x] Implementar `validate_skills.py` conforme TASK-02.4
+- [x] Testes: SKILL.md válido → exit 0; canvas-dimensions inválido → exit 1; seção ausente → exit 1
+- [x] Criar fixture de SKILL.md mínimo válido para referência de contributors
 
 **Critérios de aceite:**
 - `python validate_skills.py .agents/skills/` → exit 0 com todas as skills do framework
