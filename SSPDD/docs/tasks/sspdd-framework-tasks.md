@@ -544,8 +544,8 @@ Skill de consistência cross-artefato. Detecta: RFs sem task, tasks sem RF orige
 **Sistema:** SSPDD | **RF:** RF-011 | **Dependências:** EPIC-04 | **[P] com TASK-06.1**
 
 **O que deve ser feito:**
-- [ ] Frontmatter: `canvas-dimensions: []`, input: PRD ou TechSpec
-- [ ] Workflow: aplicar checklist de qualidade ao artefato → listar itens críticos (bloqueantes) e não-críticos → gerar `docs/checklists/[feature]-[tipo].md`
+- [x] Frontmatter: `canvas-dimensions: []`, input: PRD ou TechSpec
+- [x] Workflow: aplicar checklist de qualidade ao artefato → listar itens críticos (bloqueantes) e não-críticos → gerar `docs/checklists/[feature]-[tipo].md`
 
 **Critérios de aceite:**
 - SKILL.md passa `validate_skills.py`

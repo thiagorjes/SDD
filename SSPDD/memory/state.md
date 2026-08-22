@@ -39,10 +39,10 @@ _Atualizado em: 2026-08-22_
 - **Artefatos:** docs/techspec/sspdd-framework-techspec.md + data-model.md + script-contracts/ + quickstart.md
 - **Etapa concluída:** /tasks (v1.0) — 2026-08-22
 - **Artefato:** docs/tasks/sspdd-framework-tasks.md
-- **Task implementada:** TASK-06.1 — SKILL.md /clarify com resolução de ambiguidades uma a uma e bump MINOR do PRD — 2026-08-22
-- **Arquivos:** .agents/skills/clarify/SKILL.md, .agents/skills/clarify/validate-rules.json
+- **Task implementada:** TASK-06.2 — SKILL.md /checklist com itens críticos e não-críticos por qualidade de requisito — 2026-08-22
+- **Arquivos:** .agents/skills/checklist/SKILL.md, .agents/skills/checklist/validate-rules.json
 - **Testes:** não aplicável (task de documentação)
-- **Próxima task:** TASK-06.2
+- **Próxima task:** TASK-06.3
 
 ## Artifact Registry
 
